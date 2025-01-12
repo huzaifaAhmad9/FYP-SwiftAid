@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "553469458906",
+    "project_id": "swift-aid-fyp",
+    "storage_bucket": "swift-aid-fyp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553469458906:android:25ade0e992ad19caaf28e3",
+        "android_client_info": {
+          "package_name": "com.example.swift_aid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4mVDHdECXBMlHqHFaAoWUmnuUpuEvvDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
