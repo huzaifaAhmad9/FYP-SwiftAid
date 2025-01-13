@@ -111,4 +111,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
       ),
     ));
   }
+
+  @override
+  void dispose() {
+    _controllers.asMap().forEach((i, c) => c.dispose());
+    super.dispose();
+  }
 }
