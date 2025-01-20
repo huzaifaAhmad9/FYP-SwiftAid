@@ -512,6 +512,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  scroll_wheel_date_picker:
+    dependency: "direct main"
+    description:
+      name: scroll_wheel_date_picker
+      sha256: "60ca2bd902d6c1598e6950d51cc657f52256e30be5b95ddd1e72bef93542cab9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2+1"
   shared_preferences:
     dependency: "direct main"
     description:

@@ -10,6 +10,9 @@ class CustomTextFormField extends StatelessWidget {
   final Color borderColor;
   final double borderRadius;
   final Color errorBorderColor;
+  final bool readOnly;
+  final VoidCallback? onTap;
+  final Widget? suffixIcon;
 
   const CustomTextFormField({
     super.key,
@@ -22,6 +25,9 @@ class CustomTextFormField extends StatelessWidget {
     this.borderColor = Colors.blue,
     this.errorBorderColor = Colors.red,
     this.borderRadius = 10.0,
+    this.readOnly = false,
+    this.onTap,
+    this.suffixIcon,
   });
 
   @override
@@ -30,10 +36,13 @@ class CustomTextFormField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,
+      readOnly: readOnly,
+      onTap: onTap,
       decoration: InputDecoration(
         hintText: hintText,
         labelText: labelText,
         labelStyle: labelStyle ?? TextStyle(color: borderColor),
+        suffixIcon: suffixIcon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(
