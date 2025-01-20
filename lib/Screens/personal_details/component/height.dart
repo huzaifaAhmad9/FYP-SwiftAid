@@ -1,7 +1,6 @@
 import 'package:cupertino_height_picker/cupertino_height_picker.dart';
 import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HeightSelectionScreen extends StatefulWidget {
@@ -76,8 +75,9 @@ class HeightSelectionScreenState extends State<HeightSelectionScreen> {
                             });
                           },
                         );
-                        // After the height is picked, return the height to the previous screen
-                        Navigator.pop(context, heightInCm.toStringAsFixed(1));
+                        if (context.mounted) {
+                          Navigator.pop(context, heightInCm.toStringAsFixed(1));
+                        }
                       },
                     ),
                   ],
