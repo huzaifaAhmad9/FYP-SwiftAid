@@ -1,5 +1,8 @@
 import 'package:swift_aid/Screens/personal_details/component/blood_group.dart';
 import 'package:swift_aid/Screens/personal_details/component/text_field.dart';
+import 'package:swift_aid/Screens/personal_details/component/gender.dart';
+import 'package:swift_aid/Screens/personal_details/component/height.dart';
+import 'package:swift_aid/Screens/personal_details/component/weight.dart';
 import 'package:swift_aid/Screens/personal_details/component/age.dart';
 import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
@@ -207,8 +210,101 @@ class _PersonalDetailState extends State<PersonalDetail> {
                       const SizedBox(
                         height: 20,
                       ),
+                      CustomTextFormField(
+                        keyboardType: TextInputType.text,
+                        hintText: '170cm',
+                        labelText: 'Height',
+                        controller: _controllers[5],
+                        readOnly: true,
+                        onTap: () async {
+                          final selectedHeight = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const HeightSelectionScreen(),
+                            ),
+                          );
+                          if (selectedHeight != null) {
+                            setState(() {
+                              _controllers[5].text = '$selectedHeight cm';
+                            });
+                          }
+                        },
+                        validator: (value) => value != null && value.isNotEmpty
+                            ? null
+                            : 'Height is required',
+                        labelStyle:
+                            const TextStyle(color: AppColors.primaryColor),
+                        borderColor: AppColors.primaryColor,
+                        errorBorderColor: Colors.red,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      CustomTextFormField(
+                        keyboardType: TextInputType.text,
+                        hintText: '20Kg',
+                        labelText: 'Weight',
+                        controller: _controllers[6],
+                        readOnly: true,
+                        onTap: () async {
+                          final selectedWeight = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const WeightSelectionScreen(),
+                            ),
+                          );
+                          if (selectedWeight != null) {
+                            setState(() {
+                              _controllers[6].text = '$selectedWeight Kg';
+                            });
+                          }
+                        },
+                        validator: (value) => value != null && value.isNotEmpty
+                            ? null
+                            : 'Weight is required',
+                        labelStyle:
+                            const TextStyle(color: AppColors.primaryColor),
+                        borderColor: AppColors.primaryColor,
+                        errorBorderColor: Colors.red,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      CustomTextFormField(
+                        keyboardType: TextInputType.text,
+                        hintText: 'M',
+                        labelText: 'Gender',
+                        controller: _controllers[7],
+                        readOnly: true,
+                        onTap: () async {
+                          final selectedGender = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const GenderSelectionScreen(),
+                            ),
+                          );
+                          if (selectedGender != null) {
+                            setState(() {
+                              _controllers[7].text = selectedGender;
+                            });
+                          }
+                        },
+                        validator: (value) => value != null && value.isNotEmpty
+                            ? null
+                            : 'Gender is required',
+                        labelStyle:
+                            const TextStyle(color: AppColors.primaryColor),
+                        borderColor: AppColors.primaryColor,
+                        errorBorderColor: Colors.red,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       CustomButton(
-                        borderRadius: 30.0,
+                        borderRadius: 20.0,
                         text: 'Upload Details',
                         onPressed: () {
                           if (_formKey.currentState?.validate() ?? false) {

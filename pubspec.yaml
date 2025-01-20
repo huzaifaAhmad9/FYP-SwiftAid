@@ -9,6 +9,8 @@ dependencies:
   flutter:
     sdk: flutter
   scroll_wheel_date_picker: ^0.0.2+1
+  cupertino_height_picker: ^1.0.0
+  animated_weight_picker: ^1.0.3
   shared_preferences: ^2.3.5
   firebase_storage: ^12.4.0
   cloud_firestore: ^5.6.1
