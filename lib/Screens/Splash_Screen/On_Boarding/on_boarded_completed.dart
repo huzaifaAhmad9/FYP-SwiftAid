@@ -1,7 +1,7 @@
 import 'package:swift_aid/Screens/Main_Screens/main_home.dart';
 import 'package:swift_aid/components/custom_button.dart';
+import 'package:swift_aid/Screens/auth/Login/login.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
-import 'package:swift_aid/Screens/auth/login.dart';
 import 'package:flutter/material.dart';
 
 class OnBoardedCompleted extends StatefulWidget {
