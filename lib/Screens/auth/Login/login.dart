@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:swift_aid/Screens/auth/Auth_service/auth_service.dart';
 import 'package:swift_aid/Screens/auth/Forget_password/forget_password.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/circle_container.dart';
@@ -65,6 +69,28 @@ class _LoginState extends State<Login> {
     setState(() {
       _obscurePassword = !_obscurePassword;
     });
+  }
+
+  final AuthService _auth = AuthService();
+  void login() async {
+    final email = _email.text.trim();
+    final password = _password.text.trim();
+    try {
+      await _auth.logIn(email, password);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(' Login sucessfully')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -186,9 +212,7 @@ class _LoginState extends State<Login> {
                   backgroundColor: AppColors.primaryColor,
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Login')),
-                      );
+                      login();
                     }
                   },
                 ),
@@ -260,7 +284,28 @@ class _LoginState extends State<Login> {
                     width: 30,
                     color: Colors.transparent,
                   ),
-                  onTap: () {},
+                  onTap: () async {
+                    log('before login');
+                    User? user = await _auth.siginwithGoogle();
+
+                    if (user != null) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Login sucessfully'),
+                          ),
+                        );
+                      }
+                    } else {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Login failed'),
+                          ),
+                        );
+                      }
+                    }
+                  },
                 )
               ],
             ),

@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:swift_aid/Screens/auth/Auth_service/auth_service.dart';
 import 'package:swift_aid/Screens/personal_details/personal_detail.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/custom_button.dart';
@@ -25,6 +26,34 @@ class _SignState extends State<Sign> {
   bool _obscurePassword = true;
   bool _isEmailValid = false;
   bool _isChecked = false;
+  final AuthService _authService = AuthService();
+
+  void signUp() async {
+    final name = _name.text.trim();
+    final email = _email.text.trim();
+    final password = _password.text.trim();
+
+    try {
+      await _authService.signUp(email, password, name);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Account created successfully!')),
+        );
+      }
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const PersonalDetail()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sign-up failed: ${e.toString()}')),
+        );
+      }
+    }
+  }
 
   final _formKey = GlobalKey<FormState>();
 
@@ -185,7 +214,9 @@ class _SignState extends State<Sign> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "password is required";
+                            return "Password is required";
+                          } else if (value.length < 6) {
+                            return "Password must be at least 6 characters long";
                           }
                           return null;
                         },
@@ -253,17 +284,20 @@ class _SignState extends State<Sign> {
                       const SizedBox(height: 30),
                       CustomButton(
                         text: 'Sign UP',
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Creating accont')),
-                            );
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const PersonalDetail()));
-                          }
-                        },
+                        onPressed: _isChecked
+                            ? () {
+                                if (_formKey.currentState!.validate()) {
+                                  signUp();
+                                }
+                              }
+                            : () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Please agree to the terms and conditions'),
+                                  ),
+                                );
+                              },
                         height: 50,
                         width: 400,
                         borderRadius: 30,

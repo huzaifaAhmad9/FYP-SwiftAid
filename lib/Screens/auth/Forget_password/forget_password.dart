@@ -1,3 +1,4 @@
+import 'package:swift_aid/Screens/auth/Auth_service/auth_service.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/Screens/auth/Login/login.dart';
 import 'package:swift_aid/components/custom_button.dart';
@@ -12,6 +13,7 @@ class ForgetPassword extends StatefulWidget {
 }
 
 class _ForgetPasswordState extends State<ForgetPassword> {
+  final AuthService _auth = AuthService();
   late TextEditingController _newPassword;
   late TextEditingController _confirmnewPassword;
   late FocusNode _newFocus;
@@ -53,6 +55,32 @@ class _ForgetPasswordState extends State<ForgetPassword> {
     setState(() {
       _obscurePassword = !_obscurePassword;
     });
+  }
+
+  void updatePassword() async {
+    final newpassword = _newPassword.text.trim();
+    final confirmnewpassword = _confirmnewPassword.text.trim();
+    if (newpassword == confirmnewpassword) {
+      try {
+        await _auth.resetPassword(confirmnewpassword);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Password reset successfully')),
+          );
+
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const Login()));
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(e.toString())));
+        }
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('password not match')));
+    }
   }
 
   @override
@@ -149,11 +177,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                   text: 'Reset',
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Reseting password')),
-                      );
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const Login()));
+                      updatePassword();
                     }
                   },
                   height: 50,
