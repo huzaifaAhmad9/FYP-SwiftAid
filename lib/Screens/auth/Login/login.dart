@@ -278,35 +278,47 @@ class _LoginState extends State<Login> {
                   height: MediaQuery.of(context).size.height * 0.05,
                 ),
                 GestureDetector(
-                  child: Circle_Container(
-                    icon: Image.asset('assets/images/google.jpg'),
-                    height: 30,
-                    width: 30,
-                    color: Colors.transparent,
-                  ),
-                  onTap: () async {
-                    log('before login');
-                    User? user = await _auth.siginwithGoogle();
+                    child: Circle_Container(
+                      icon: Image.asset('assets/images/google.jpg'),
+                      height: 30,
+                      width: 30,
+                      color: Colors.transparent,
+                    ),
+                    onTap: () async {
+                      log('before login');
+                      try {
+                        User? user = await _auth.siginwithGoogle();
 
-                    if (user != null) {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Login sucessfully'),
-                          ),
-                        );
+                        if (user != null) {
+                          log('User signed in successfully.');
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Login successfully'),
+                              ),
+                            );
+                          }
+                        } else {
+                          log('Google sign-in returned null user.');
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Login failed'),
+                              ),
+                            );
+                          }
+                        }
+                      } catch (e) {
+                        log('Error in onTap during login: ${e.toString()}');
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Login failed: ${e.toString()}'),
+                            ),
+                          );
+                        }
                       }
-                    } else {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Login failed'),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                )
+                    })
               ],
             ),
           ),
