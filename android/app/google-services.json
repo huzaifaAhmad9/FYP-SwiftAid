@@ -1,7 +1,6 @@
 {
   "project_info": {
     "project_number": "553469458906",
-    "firebase_url": "https://swift-aid-fyp-default-rtdb.firebaseio.com",
     "project_id": "swift-aid-fyp",
     "storage_bucket": "swift-aid-fyp.firebasestorage.app"
   },
@@ -13,20 +12,7 @@
           "package_name": "com.example.swift_aid"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "553469458906-t5ekfeskj6v026fojvcn3dvm0jgam1j6.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.swift_aid",
-            "certificate_hash": "689fc70aa97123641c9b9be2cb16b5bf47a2da6e"
-          }
-        },
-        {
-          "client_id": "553469458906-djdh89nlfs19u1vtjs2rd97mfsjik629.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyD4mVDHdECXBMlHqHFaAoWUmnuUpuEvvDs"
@@ -34,19 +20,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "553469458906-djdh89nlfs19u1vtjs2rd97mfsjik629.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "553469458906-8ckftqrun7u9r0c97qu0d1ufs5nj34et.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.swiftAid"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
