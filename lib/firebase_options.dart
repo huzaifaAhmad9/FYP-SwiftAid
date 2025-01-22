@@ -46,6 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '553469458906',
     projectId: 'swift-aid-fyp',
     authDomain: 'swift-aid-fyp.firebaseapp.com',
+    databaseURL: 'https://swift-aid-fyp-default-rtdb.firebaseio.com',
     storageBucket: 'swift-aid-fyp.firebasestorage.app',
     measurementId: 'G-6QGQZ11NLQ',
   );
@@ -55,6 +56,7 @@ class DefaultFirebaseOptions {
     appId: '1:553469458906:android:25ade0e992ad19caaf28e3',
     messagingSenderId: '553469458906',
     projectId: 'swift-aid-fyp',
+    databaseURL: 'https://swift-aid-fyp-default-rtdb.firebaseio.com',
     storageBucket: 'swift-aid-fyp.firebasestorage.app',
   );
 
@@ -63,7 +65,10 @@ class DefaultFirebaseOptions {
     appId: '1:553469458906:ios:797ba6429f8272c5af28e3',
     messagingSenderId: '553469458906',
     projectId: 'swift-aid-fyp',
+    databaseURL: 'https://swift-aid-fyp-default-rtdb.firebaseio.com',
     storageBucket: 'swift-aid-fyp.firebasestorage.app',
+    androidClientId: '553469458906-t5ekfeskj6v026fojvcn3dvm0jgam1j6.apps.googleusercontent.com',
+    iosClientId: '553469458906-8ckftqrun7u9r0c97qu0d1ufs5nj34et.apps.googleusercontent.com',
     iosBundleId: 'com.example.swiftAid',
   );
 
@@ -72,7 +77,10 @@ class DefaultFirebaseOptions {
     appId: '1:553469458906:ios:797ba6429f8272c5af28e3',
     messagingSenderId: '553469458906',
     projectId: 'swift-aid-fyp',
+    databaseURL: 'https://swift-aid-fyp-default-rtdb.firebaseio.com',
     storageBucket: 'swift-aid-fyp.firebasestorage.app',
+    androidClientId: '553469458906-t5ekfeskj6v026fojvcn3dvm0jgam1j6.apps.googleusercontent.com',
+    iosClientId: '553469458906-8ckftqrun7u9r0c97qu0d1ufs5nj34et.apps.googleusercontent.com',
     iosBundleId: 'com.example.swiftAid',
   );
 
@@ -82,7 +90,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '553469458906',
     projectId: 'swift-aid-fyp',
     authDomain: 'swift-aid-fyp.firebaseapp.com',
+    databaseURL: 'https://swift-aid-fyp-default-rtdb.firebaseio.com',
     storageBucket: 'swift-aid-fyp.firebasestorage.app',
     measurementId: 'G-M3P3P2D0DW',
   );
+
 }

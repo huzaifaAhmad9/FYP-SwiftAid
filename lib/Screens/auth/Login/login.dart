@@ -1,13 +1,12 @@
-import 'dart:developer';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:swift_aid/Screens/auth/Auth_service/auth_service.dart';
+import 'package:swift_aid/Screens/Main_Screens/Home_Screen/home_screen.dart';
 import 'package:swift_aid/Screens/auth/Forget_password/forget_password.dart';
+import 'package:swift_aid/Screens/auth/Auth_service/auth_service.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/circle_container.dart';
 import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/Screens/auth/SignUp/sign.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:swift_aid/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -285,9 +284,7 @@ class _LoginState extends State<Login> {
                     color: Colors.transparent,
                   ),
                   onTap: () async {
-                    log('before login');
                     User? user = await _auth.siginwithGoogle();
-
                     if (user != null) {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -295,6 +292,10 @@ class _LoginState extends State<Login> {
                             content: Text('Login sucessfully'),
                           ),
                         );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const HomeScreen()));
                       }
                     } else {
                       if (context.mounted) {
