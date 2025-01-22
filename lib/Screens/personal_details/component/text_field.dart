@@ -8,11 +8,13 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final FormFieldValidator<String>? validator;
   final Color borderColor;
+  final Color? cursor;
   final double borderRadius;
   final Color errorBorderColor;
   final bool readOnly;
   final VoidCallback? onTap;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
 
   const CustomTextFormField({
     super.key,
@@ -21,6 +23,7 @@ class CustomTextFormField extends StatelessWidget {
     this.labelStyle,
     this.controller,
     this.validator,
+    this.cursor,
     this.keyboardType = TextInputType.text,
     this.borderColor = Colors.blue,
     this.errorBorderColor = Colors.red,
@@ -28,6 +31,7 @@ class CustomTextFormField extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.suffixIcon,
+    this.prefixIcon,
   });
 
   @override
@@ -36,6 +40,7 @@ class CustomTextFormField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,
+      cursorColor: cursor,
       readOnly: readOnly,
       onTap: onTap,
       decoration: InputDecoration(
@@ -43,6 +48,7 @@ class CustomTextFormField extends StatelessWidget {
         labelText: labelText,
         labelStyle: labelStyle ?? TextStyle(color: borderColor),
         suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(

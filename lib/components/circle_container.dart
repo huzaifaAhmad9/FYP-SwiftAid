@@ -7,6 +7,8 @@ class Circle_Container extends StatelessWidget {
   final double height;
   final double width;
   final Color color;
+  final BoxShape shape; 
+  final BoxFit fit; 
 
   const Circle_Container({
     super.key,
@@ -14,6 +16,8 @@ class Circle_Container extends StatelessWidget {
     required this.height,
     required this.width,
     required this.color,
+    this.shape = BoxShape.circle, 
+    this.fit = BoxFit.contain, 
   });
 
   @override
@@ -23,10 +27,13 @@ class Circle_Container extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
         color: color,
-        shape: BoxShape.circle,
+        shape: shape, 
       ),
       child: Center(
-        child: icon,
+        child: FittedBox(
+          fit: fit, 
+          child: icon,
+        ),
       ),
     );
   }

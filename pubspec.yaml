@@ -11,17 +11,25 @@ dependencies:
   scroll_wheel_date_picker: ^0.0.2+1
   cupertino_height_picker: ^1.0.0
   animated_weight_picker: ^1.0.3
+  google_maps_flutter: ^2.7.0
+  permission_handler: ^11.3.1
+  mapbox_maps_flutter: ^2.5.1
   shared_preferences: ^2.3.5
+  custom_info_window: ^1.0.1
+  firebase_database: ^11.3.1
   firebase_storage: ^12.4.0
   cloud_firestore: ^5.6.1
   cupertino_icons: ^1.0.8
   firebase_core: ^3.10.0
+  google_sign_in: ^6.2.2
   firebase_auth: ^5.4.0
   fluttertoast: ^8.2.10
   image_picker: ^1.1.2
   geolocator: ^13.0.1
   http_parser: ^4.1.2
+  geocoding: ^3.0.0
   http: ^1.2.2
+  uuid: ^4.4.2
 
 
 
@@ -41,5 +49,8 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/maptheme/silver_theme.json
+    - assets/maptheme/retro_theme.json
+    - assets/maptheme/night_theme.json
 
   
