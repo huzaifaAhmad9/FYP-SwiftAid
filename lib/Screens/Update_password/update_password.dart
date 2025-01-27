@@ -5,14 +5,14 @@ import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class ForgetPassword extends StatefulWidget {
-  const ForgetPassword({super.key});
+class UpdatePassword extends StatefulWidget {
+  const UpdatePassword({super.key});
 
   @override
-  State<ForgetPassword> createState() => _ForgetPasswordState();
+  State<UpdatePassword> createState() => _UpdatePasswordState();
 }
 
-class _ForgetPasswordState extends State<ForgetPassword> {
+class _UpdatePasswordState extends State<UpdatePassword> {
   final AuthService _auth = AuthService();
   late TextEditingController _newPassword;
   late TextEditingController _confirmnewPassword;

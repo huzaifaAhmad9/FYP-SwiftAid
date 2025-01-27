@@ -1,5 +1,5 @@
 import 'package:swift_aid/Screens/Main_Screens/Home_Screen/home_screen.dart';
-import 'package:swift_aid/Screens/auth/Forget_password/forget_password.dart';
+import 'package:swift_aid/Screens/auth/Forget_password/forget_passsord.dart';
 import 'package:swift_aid/Screens/auth/Auth_service/auth_service.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/circle_container.dart';
@@ -190,7 +190,7 @@ class _LoginState extends State<Login> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const ForgetPassword()));
+                                builder: (_) => const ForgetPasssord()));
                       },
                       child: const Text(
                         'Forgot Password?',
