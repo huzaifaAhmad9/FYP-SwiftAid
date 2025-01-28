@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_bloc.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_state.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
+import 'package:flutter/material.dart';
+import 'dart:developer';
 
 class CustomDialogue extends StatelessWidget {
   const CustomDialogue({super.key});
