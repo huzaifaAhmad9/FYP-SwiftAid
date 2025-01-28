@@ -1,4 +1,4 @@
-import 'package:swift_aid/Screens/Main_Screens/main_home.dart';
+import 'package:swift_aid/Screens/auth/SignUp/sign.dart';
 import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/Screens/auth/Login/login.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
@@ -77,7 +77,7 @@ class _OnBoardedCompletedState extends State<OnBoardedCompleted> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MainHome(),
+                      builder: (context) => const Sign(),
                     ),
                   );
                 }),

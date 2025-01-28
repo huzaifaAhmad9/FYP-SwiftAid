@@ -1,6 +1,4 @@
-import 'package:swift_aid/Screens/auth/Auth_service/auth_service.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
-import 'package:swift_aid/Screens/auth/Login/login.dart';
 import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +11,6 @@ class UpdatePassword extends StatefulWidget {
 }
 
 class _UpdatePasswordState extends State<UpdatePassword> {
-  final AuthService _auth = AuthService();
   late TextEditingController _newPassword;
   late TextEditingController _confirmnewPassword;
   late FocusNode _newFocus;
@@ -61,22 +58,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
     final newpassword = _newPassword.text.trim();
     final confirmnewpassword = _confirmnewPassword.text.trim();
     if (newpassword == confirmnewpassword) {
-      try {
-        await _auth.resetPassword(confirmnewpassword);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Password reset successfully')),
-          );
-
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => const Login()));
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(e.toString())));
-        }
-      }
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('password not match')));
