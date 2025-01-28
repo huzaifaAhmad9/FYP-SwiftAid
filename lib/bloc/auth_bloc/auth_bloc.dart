@@ -197,6 +197,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         await _auth.signOut();
         emit(AuthSucessState(message: 'Logged out successfully.'));
+        log(prefs.getString('auth_token')!);
       } catch (e) {
         emit(AuthErrorState(message: 'Unexpected error occurred: $e'));
       }

@@ -1,6 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:swift_aid/Screens/Main_Screens/location/main_map.dart';
+import 'package:swift_aid/Screens/auth/Login/login.dart';
+import 'package:swift_aid/bloc/auth_bloc/auth_bloc.dart';
+import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
 import 'package:swift_aid/components/custom_listtile.dart';
 import 'package:swift_aid/components/custom_dialog.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
@@ -307,9 +311,11 @@ void showCustomDialog(BuildContext context) {
         ),
         title: 'Are you sure you want to log out?',
         onConfirm: () {
-          Navigator.of(context).pop(); // Close the dialog
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Logged out successfully')),
+          context.read<AuthBloc>().add(LogoutEvent());
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const Login()),
+            (route) => false,
           );
         },
       );
