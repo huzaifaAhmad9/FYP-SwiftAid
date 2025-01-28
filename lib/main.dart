@@ -1,6 +1,8 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:swift_aid/Screens/Splash_Screen/main_splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:swift_aid/Screens/auth/bloc/auth_bloc.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -8,7 +10,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(BlocProvider(create: (context) => AuthBloc(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

@@ -1,4 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:swift_aid/Screens/auth/bloc/auth_bloc.dart';
+import 'package:swift_aid/Screens/auth/bloc/auth_evetns.dart';
+import 'package:swift_aid/Screens/auth/components/custom_dialogue.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/components/custom_button.dart';
@@ -18,8 +21,6 @@ class _ForgetPasssordState extends State<ForgetPasssord> {
   late FocusNode _emailFocus;
   final _formKey = GlobalKey<FormState>();
   bool _isEmailValid = false;
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   void _checkEmail() {
     setState(() {
@@ -45,35 +46,15 @@ class _ForgetPasssordState extends State<ForgetPasssord> {
     super.dispose();
   }
 
-  Future<void> sendResetPasssword(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Password reset email sent!')),
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No user found for that email.')),
-          );
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to send reset email: ${e.message}')),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Unexpected error occurred: $e')),
-        );
-      }
-    }
+  void sendResetPasssword(String email) {
+    context.read<AuthBloc>().add(ForgetPasswordEvent(email: email));
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const CustomDialogue();
+      },
+    );
   }
 
   @override
@@ -136,13 +117,9 @@ class _ForgetPasssordState extends State<ForgetPasssord> {
               CustomButton(
                 text: "Reset ",
                 onPressed: () {
-                  String email = _email.text;
-                  if (email.isNotEmpty) {
+                  final email = _email.text.trim();
+                  if (_formKey.currentState!.validate()) {
                     sendResetPasssword(email);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please enter your email')),
-                    );
                   }
                 },
                 height: 50,

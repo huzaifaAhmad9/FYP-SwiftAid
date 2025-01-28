@@ -24,6 +24,7 @@ dependencies:
   google_sign_in: ^6.2.2
   firebase_auth: ^5.4.0
   fluttertoast: ^8.2.10
+  flutter_bloc: ^9.0.0
   image_picker: ^1.1.2
   geolocator: ^13.0.1
   http_parser: ^4.1.2

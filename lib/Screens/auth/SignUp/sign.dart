@@ -1,7 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:swift_aid/Screens/auth/Auth_service/auth_service.dart';
-import 'package:swift_aid/Screens/personal_details/personal_detail.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:swift_aid/Screens/auth/bloc/auth_bloc.dart';
+import 'package:swift_aid/Screens/auth/bloc/auth_evetns.dart';
+import 'package:swift_aid/Screens/auth/components/custom_dialogue.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/Screens/auth/Login/login.dart';
@@ -26,33 +28,22 @@ class _SignState extends State<Sign> {
   bool _obscurePassword = true;
   bool _isEmailValid = false;
   bool _isChecked = false;
-  final AuthService _authService = AuthService();
 
   void signUp() async {
-    final name = _name.text.trim();
     final email = _email.text.trim();
     final password = _password.text.trim();
+    final name = _name.text.trim();
 
-    try {
-      await _authService.signUp(email, password, name);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created successfully!')),
-        );
-      }
-      if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const PersonalDetail()),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sign-up failed: ${e.toString()}')),
-        );
-      }
-    }
+    context
+        .read<AuthBloc>()
+        .add(SignupEvent(email: email, password: password, name));
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const CustomDialogue();
+      },
+    );
   }
 
   final _formKey = GlobalKey<FormState>();

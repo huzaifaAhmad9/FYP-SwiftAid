@@ -1,12 +1,15 @@
-import 'package:swift_aid/Screens/Main_Screens/Home_Screen/home_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:swift_aid/Screens/auth/Forget_password/forget_passsord.dart';
-import 'package:swift_aid/Screens/auth/Auth_service/auth_service.dart';
+
+import 'package:swift_aid/Screens/auth/bloc/auth_bloc.dart';
+import 'package:swift_aid/Screens/auth/bloc/auth_evetns.dart';
+import 'package:swift_aid/Screens/auth/components/custom_dialogue.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/circle_container.dart';
 import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/Screens/auth/SignUp/sign.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:swift_aid/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -70,26 +73,18 @@ class _LoginState extends State<Login> {
     });
   }
 
-  final AuthService _auth = AuthService();
   void login() async {
     final email = _email.text.trim();
     final password = _password.text.trim();
-    try {
-      await _auth.logIn(email, password);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(' Login sucessfully')),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-          ),
-        );
-      }
-    }
+
+    context.read<AuthBloc>().add(LoginEvent(email: email, password: password));
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const CustomDialogue();
+      },
+    );
   }
 
   @override
@@ -284,28 +279,13 @@ class _LoginState extends State<Login> {
                     color: Colors.transparent,
                   ),
                   onTap: () async {
-                    User? user = await _auth.siginwithGoogle();
-                    if (user != null) {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Login sucessfully'),
-                          ),
-                        );
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const HomeScreen()));
-                      }
-                    } else {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Login failed'),
-                          ),
-                        );
-                      }
-                    }
+                    context.read<AuthBloc>().add(GoogleSignInEvent());
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const CustomDialogue();
+                      },
+                    );
                   },
                 )
               ],
