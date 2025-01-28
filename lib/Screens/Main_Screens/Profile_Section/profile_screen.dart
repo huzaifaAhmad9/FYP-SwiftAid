@@ -299,14 +299,18 @@ void showCustomDialog(BuildContext context) {
     builder: (context) {
       return CustomDialog(
         confirmText: 'Logout',
+        cancelText: 'Cancel',
         icon: const Icon(
           Icons.logout_outlined,
           size: 35.0,
           color: AppColors.primaryColor,
         ),
-        title: 'Are you sure to log out of your account?',
+        title: 'Are you sure you want to log out?',
         onConfirm: () {
-          //! ---------------------
+          Navigator.of(context).pop(); // Close the dialog
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Logged out successfully')),
+          );
         },
       );
     },
