@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:swift_aid/Screens/Main_Screens/location/main_map.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
 import 'package:swift_aid/components/custom_listtile.dart';
 import 'package:swift_aid/components/custom_dialog.dart';
@@ -18,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  bool isSwitched = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,47 +176,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: 25,
                     ),
                     CustomListTile(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => const MainMap()));
-                      },
-                      leading: Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                            color: AppColors.textColor.withOpacity(.4),
-                            shape: BoxShape.circle),
-                        child: Image.asset(
-                          'assets/images/loc.png',
-                          scale: 1.5,
-                        ),
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                      title: 'Location',
-                    ),
-                    const Divider(
-                      color: AppColors.lightGreyColor,
-                      indent: 8.0,
-                      endIndent: 16.0,
-                    ),
-                    CustomListTile(
-                      leading: Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                            color: AppColors.textColor.withOpacity(.4),
-                            shape: BoxShape.circle),
-                        child: Image.asset('assets/images/hearts.png'),
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                      title: 'My Saved',
-                    ),
-                    const Divider(
-                      color: AppColors.lightGreyColor,
-                      indent: 8.0,
-                      endIndent: 16.0,
-                    ),
-                    CustomListTile(
                       leading: Container(
                         height: 45,
                         width: 45,
@@ -226,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Image.asset('assets/images/doc.png'),
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                      title: 'Appointmnet',
+                      title: 'Account Information',
                     ),
                     const Divider(
                       color: AppColors.lightGreyColor,
@@ -240,10 +199,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         decoration: BoxDecoration(
                             color: AppColors.textColor.withOpacity(.4),
                             shape: BoxShape.circle),
-                        child: Image.asset('assets/images/wallet.png'),
+                        child: const Icon(
+                          Icons.notifications_none_outlined,
+                          color: AppColors.primaryColor,
+                        ),
                       ),
-                      trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                      title: 'Payment Method',
+                      trailing: Transform.scale(
+                        scale: 0.8,
+                        child: Switch(
+                          value: isSwitched,
+                          activeTrackColor: AppColors.primaryColor,
+                          thumbColor: MaterialStateProperty.all(Colors.white),
+                          onChanged: (value) {
+                            setState(() {
+                              isSwitched = value;
+                            });
+                          },
+                        ),
+                      ),
+                      onTap: () {
+                        //! --------Functioality---------
+                      },
+                      title: 'Notifications',
                     ),
                     const Divider(
                       color: AppColors.lightGreyColor,

@@ -8,14 +8,14 @@ import 'dart:async' show Completer;
 import 'dart:developer' show log;
 import 'dart:convert' show json;
 
-class MainMap extends StatefulWidget {
-  const MainMap({super.key});
+class LocationScreen extends StatefulWidget {
+  const LocationScreen({super.key});
 
   @override
-  State<MainMap> createState() => _MainMapState();
+  State<LocationScreen> createState() => _LocationScreenState();
 }
 
-class _MainMapState extends State<MainMap> {
+class _LocationScreenState extends State<LocationScreen> {
   String mapTheme = '';
   final Completer<GoogleMapController> _controller = Completer();
   final List<Marker> _markers = [];
