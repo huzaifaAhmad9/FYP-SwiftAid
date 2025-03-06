@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
-import 'package:swift_aid/bloc/auth_bloc/auth_state.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:swift_aid/bloc/auth_bloc/auth_state.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,16 +33,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email-already-in-use') {
-          throw Exception('The email address is already in use.');
+          emit(AuthErrorState(message: 'The email address is already in use.'));
         } else if (e.code == 'weak-password') {
-          throw Exception('The password is too weak.');
+          emit(AuthErrorState(message: 'The password is too weak.'));
         } else if (e.code == 'invalid-email') {
-          throw Exception('The email address is invalid.');
+          emit(AuthErrorState(message: 'The email address is invalid.'));
         } else {
-          throw Exception('Failed to sign up: ${e.message}');
+          emit(AuthErrorState(message: 'Failed to sign up: ${e.message}'));
         }
       } catch (e) {
-        throw Exception('Unexpected error occurred: $e');
+        emit(AuthErrorState(message: 'Unexpected error occurred: $e'));
       }
     });
 
@@ -196,6 +196,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         await _auth.signOut();
         emit(AuthSucessState(message: 'Logged out successfully.'));
+        log(prefs.getString('auth_token')!);
       } catch (e) {
         emit(AuthErrorState(message: 'Unexpected error occurred: $e'));
       }
