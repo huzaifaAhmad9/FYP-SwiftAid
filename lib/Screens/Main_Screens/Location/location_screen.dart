@@ -1,3 +1,4 @@
+import 'package:swift_aid/Screens/Main_Screens/Location/emergency_registration.dart';
 import 'package:swift_aid/Screens/personal_details/component/text_field.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:swift_aid/components/custom_listtile.dart';
@@ -320,9 +321,11 @@ class _LocationScreenState extends State<LocationScreen> {
                                                         AppColors.primaryColor,
                                                     text: 'Next',
                                                     onPressed: () {
-                                                      // Handle submission
-                                                      Navigator.pop(
-                                                          context); // Close the bottom sheet
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  const EmergencyRegistration()));
                                                     },
                                                   ),
                                                 ),

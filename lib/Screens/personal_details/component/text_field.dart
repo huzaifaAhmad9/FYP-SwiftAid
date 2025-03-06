@@ -15,6 +15,9 @@ class CustomTextFormField extends StatelessWidget {
   final VoidCallback? onTap;
   final Widget? suffixIcon;
   final Widget? prefixIcon;
+  final int? maxLines;
+  final int? minLines;
+  final FocusNode? focusNode;
 
   const CustomTextFormField({
     super.key,
@@ -32,6 +35,9 @@ class CustomTextFormField extends StatelessWidget {
     this.onTap,
     this.suffixIcon,
     this.prefixIcon,
+    this.maxLines,
+    this.minLines,
+    this.focusNode,
   });
 
   @override
@@ -43,6 +49,9 @@ class CustomTextFormField extends StatelessWidget {
       cursorColor: cursor,
       readOnly: readOnly,
       onTap: onTap,
+      maxLines: maxLines,
+      minLines: minLines,
+      focusNode: focusNode,
       decoration: InputDecoration(
         hintText: hintText,
         labelText: labelText,
