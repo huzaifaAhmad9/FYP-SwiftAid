@@ -69,22 +69,28 @@ class _MessageScreenState extends State<MessageScreen> {
               Container(
                 height: MediaQuery.of(context).size.height * 0.06,
                 width: MediaQuery.of(context).size.width * 0.75,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 221, 220, 220),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: Row(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 221, 220, 220),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.emoji_emotions_outlined,
                       color: Color.fromARGB(255, 138, 138, 138),
                     ),
-                    2.widthBox,
-                    const Text("Write Here",
-                        style: TextStyle(
-                          color: Colors.black,
-                        )),
+                    SizedBox(width: 5), // Adjust spacing
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: "Write here",
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(color: Colors.black),
+                        ),
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   ],
                 ),
               ),
