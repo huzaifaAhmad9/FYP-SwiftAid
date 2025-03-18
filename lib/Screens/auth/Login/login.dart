@@ -1,5 +1,6 @@
 import 'package:swift_aid/Screens/auth/Forget_password/forget_passsord.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
+import 'package:swift_aid/Screens/doctor_screens/doctor_main_home.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/Screens/Main_Screens/main_home.dart';
 import 'package:swift_aid/components/circle_container.dart';
@@ -130,12 +131,11 @@ class _LoginState extends State<Login> {
                 ),
               ),
               Expanded(
-                child: _pages[_selectedIndex], 
+                child: _pages[_selectedIndex],
               ),
             ],
           ),
-        )
-        );
+        ));
   }
 }
 
@@ -761,7 +761,13 @@ class _HospitalState extends State<Hospital> {
                   backgroundColor: AppColors.primaryColor,
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      login();
+                      //login();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DoctorMainHome(),
+                        ),
+                      );
                     }
                   },
                 ),
