@@ -18,4 +18,6 @@ class AppColors {
   static const redColor = Color(0xFFF87171);
   static final shimmerBaseColor = AppColors.greyColor.withOpacity(0.2);
   static final shimmerHighlightColor = AppColors.greyColor.withOpacity(0.3);
+  static const lightGrey = Color(0xFF868686);
+
 }
