@@ -760,15 +760,15 @@ class _HospitalState extends State<Hospital> {
                   text: 'Login',
                   backgroundColor: AppColors.primaryColor,
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      //login();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const DoctorMainHome(),
-                        ),
-                      );
-                    }
+                    // if (_formKey.currentState!.validate()) {
+                    //login();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DoctorMainHome(),
+                      ),
+                    );
+                    // }
                   },
                 ),
                 const SizedBox(height: 10),
