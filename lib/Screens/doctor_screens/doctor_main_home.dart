@@ -1,5 +1,5 @@
+import 'package:swift_aid/Screens/doctor_screens/Search_doctor_screen/search_doctors.dart';
 import 'package:swift_aid/Screens/Main_Screens/Profile_Section/profile_screen.dart';
-import 'package:swift_aid/Screens/Main_Screens/Location/location_screen.dart';
 import 'package:swift_aid/Screens/doctor_screens/doctor_home_screen.dart';
 import 'package:swift_aid/Screens/Main_Screens/message_screen.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
@@ -18,8 +18,8 @@ class _DoctorMainHomeState extends State<DoctorMainHome> {
 
   final List<Widget> _screens = [
     const DoctorHomeScreen(),
+    const SearchDoctors(),
     const MessageScreen(),
-    const LocationScreen(),
     const ProfileScreen()
   ];
 
