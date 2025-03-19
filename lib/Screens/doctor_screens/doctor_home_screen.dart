@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:swift_aid/Screens/doctor_screens/Schedule_Screens/book_appointment.dart';
 import 'package:swift_aid/components/custom_text.dart';
+import 'package:flutter/material.dart';
 
 class DoctorHomeScreen extends StatefulWidget {
   const DoctorHomeScreen({super.key});
@@ -27,7 +28,12 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
                 ),
                 const Spacer(),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const BookAppointment()));
+                    },
                     icon: const Icon(Icons.calendar_month_outlined)),
                 IconButton(
                     onPressed: () {},

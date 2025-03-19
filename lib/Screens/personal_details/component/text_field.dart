@@ -4,6 +4,7 @@ class CustomTextFormField extends StatelessWidget {
   final String? hintText;
   final String? labelText;
   final TextStyle? labelStyle;
+  final TextStyle? hintStyle;
   final TextEditingController? controller;
   final TextInputType keyboardType;
   final FormFieldValidator<String>? validator;
@@ -24,6 +25,7 @@ class CustomTextFormField extends StatelessWidget {
     this.hintText,
     this.labelText,
     this.labelStyle,
+    this.hintStyle, // Optional hintStyle
     this.controller,
     this.validator,
     this.cursor,
@@ -54,6 +56,7 @@ class CustomTextFormField extends StatelessWidget {
       focusNode: focusNode,
       decoration: InputDecoration(
         hintText: hintText,
+        hintStyle: hintStyle, // Applying hintStyle
         labelText: labelText,
         labelStyle: labelStyle ?? TextStyle(color: borderColor),
         suffixIcon: suffixIcon,

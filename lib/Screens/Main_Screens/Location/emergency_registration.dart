@@ -3,6 +3,7 @@ import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/components/custom_text.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:flutter/material.dart';
+
 class EmergencyRegistration extends StatefulWidget {
   const EmergencyRegistration({super.key});
 
@@ -103,6 +104,9 @@ class _EmergencyRegistrationState extends State<EmergencyRegistration> {
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
                       hintText: 'Note of Patient .....',
+                      hintStyle: const TextStyle(
+                          color: AppColors.primaryColor,
+                          fontStyle: FontStyle.italic),
                       cursor: AppColors.primaryColor,
                       labelStyle:
                           const TextStyle(color: AppColors.primaryColor),
