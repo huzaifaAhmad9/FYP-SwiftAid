@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:swift_aid/Screens/doctor_screens/Schedule_Screens/book_appointment.dart';
-import 'package:swift_aid/app_colors/app_colors.dart';
-import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
+import 'package:swift_aid/components/custom_button.dart';
+import 'package:swift_aid/app_colors/app_colors.dart';
+import 'package:flutter/material.dart';
 
 class DoctorDetails extends StatelessWidget {
   const DoctorDetails({super.key});
@@ -198,6 +198,7 @@ class DoctorDetails extends StatelessWidget {
                 },
                 backgroundColor: AppColors.primaryColor,
               ),
+              2.heightBox
             ],
           ),
         ),
