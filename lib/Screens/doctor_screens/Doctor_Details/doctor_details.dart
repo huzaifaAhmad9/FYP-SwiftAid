@@ -49,7 +49,7 @@ class DoctorDetails extends StatelessWidget {
                     1.heightBox,
                     const Text(
                       "Dr. John Doe",
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
