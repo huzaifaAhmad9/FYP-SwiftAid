@@ -1,5 +1,5 @@
-import 'package:swift_aid/Screens/Main_Screens/Location/emergency_registration.dart';
-import 'package:swift_aid/Screens/personal_details/component/text_field.dart';
+import 'package:swift_aid/Screens/Main_Screens/Location/Registration/emergency_registration_voice.dart';
+import 'package:swift_aid/Screens/Main_Screens/Location/Registration/emergency_registration.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:swift_aid/components/custom_listtile.dart';
 import 'package:swift_aid/components/custom_button.dart';
@@ -8,7 +8,6 @@ import 'package:swift_aid/api_routes/app_routes.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async' show Completer;
 import 'dart:developer' show log;
@@ -22,8 +21,6 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  final _controllers = List.generate(1, (index) => TextEditingController());
-
   String mapTheme = '';
   final Completer<GoogleMapController> _controller = Completer();
   final List<Marker> _markers = [];
@@ -88,9 +85,11 @@ class _LocationScreenState extends State<LocationScreen> {
 
   Future<void> _fetchNearbyHospitals() async {
     if (_currentLocation == null) return;
-    const String apiKey = AppRoutes.mapApi;
-    final url =
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${_currentLocation!.latitude},${_currentLocation!.longitude}&radius=1500&type=hospital&key=$apiKey';
+
+    final url = AppRoutes.nearbyHospitalsUrl(
+      _currentLocation!.latitude,
+      _currentLocation!.longitude,
+    );
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -99,19 +98,24 @@ class _LocationScreenState extends State<LocationScreen> {
         final results = data['results'] as List;
         setState(() {
           for (var place in results) {
-            _markers.add(
-              Marker(
-                markerId: MarkerId(place['place_id']),
-                position: LatLng(
-                  place['geometry']['location']['lat'],
-                  place['geometry']['location']['lng'],
-                ),
-                infoWindow: InfoWindow(
-                  title: place['name'],
-                  snippet: place['vicinity'],
-                ),
+            _markers.add(Marker(
+              markerId: MarkerId(place['place_id']),
+              position: LatLng(
+                place['geometry']['location']['lat'],
+                place['geometry']['location']['lng'],
               ),
-            );
+              infoWindow: InfoWindow(
+                title: place['name'],
+                snippet: place['vicinity'] +
+                    (place['user_ratings_total'] != null
+                        ? '\n${place['user_ratings_total']} Reviews'
+                        : '') +
+                    (place['opening_hours'] != null &&
+                            place['opening_hours']['open_now'] != null
+                        ? '\nOpen Now: ${place['opening_hours']['open_now'] ? 'Yes' : 'No'}'
+                        : ''),
+              ),
+            ));
           }
         });
       } else {
@@ -162,185 +166,100 @@ class _LocationScreenState extends State<LocationScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(height: screenHeight * 0.01),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: CustomTextFormField(
-                            controller: _controllers[0],
-                            cursor: AppColors.primaryColorLight,
-                            errorBorderColor: AppColors.redColor,
-                            borderColor: AppColors.primaryColor,
-                            borderRadius: 20,
-                            hintText: 'Search location',
-                            keyboardType: TextInputType.name,
-                            prefixIcon: const Icon(
-                              CupertinoIcons.search,
-                              color: AppColors.primaryColor,
-                            ),
-                          ),
-                        ),
+                        SizedBox(height: screenHeight * 0.02),
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           child: CustomText(
                             text: 'NearBy Hospitals',
-                            size: 16.0,
-                            weight: FontWeight.w600,
+                            size: 22.0,
+                            weight: FontWeight.bold,
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.015),
                         Expanded(
-                          child: ListView.builder(
-                            itemCount: 3,
-                            itemBuilder: (BuildContext context, int index) {
-                              return CustomListTile(
-                                leading: const Icon(
-                                  Icons.location_on_outlined,
-                                  color: AppColors.primaryColor,
-                                ),
-                                title: 'National Hospital',
-                                subtitle: '5.5 KM Away',
-                                trailing: CustomButton(
-                                  width: 150,
-                                  height: 40,
-                                  borderRadius: 12.0,
-                                  fontSize: 11,
-                                  backgroundColor: AppColors.primaryColor,
-                                  text: 'Emergency Register',
-                                  onPressed: () {
-                                    //! Close the first bottom sheet
-                                    Navigator.pop(context);
-                                    showModalBottomSheet(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(16)),
-                                      ),
-                                      builder: (BuildContext context) {
-                                        return SizedBox(
-                                          height: screenHeight * 0.3,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const CustomText(
-                                                  text:
-                                                      'Emergency Registration',
-                                                  size: 22.0,
-                                                  weight: FontWeight.bold,
-                                                ),
-                                                const CustomText(
-                                                  text:
-                                                      'Send details to your nearest hospital',
-                                                  size: 15.0,
-                                                  weight: FontWeight.normal,
-                                                ),
-                                                SizedBox(
-                                                    height:
-                                                        screenHeight * 0.03),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceEvenly,
-                                                  children: [
-                                                    Container(
-                                                      height: 60,
-                                                      width: 150,
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            width: 1.0,
-                                                            color: AppColors
-                                                                .primaryColor),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(16.0),
-                                                      ),
-                                                      child: ListTile(
-                                                        onTap: () {},
-                                                        leading: const Icon(
-                                                          Icons.keyboard_voice,
-                                                          color: AppColors
-                                                              .primaryColor,
-                                                        ),
-                                                        title: const Text(
-                                                          'By Voice',
-                                                          style: TextStyle(
-                                                              color: AppColors
-                                                                  .primaryColor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      height: 60,
-                                                      width: 150,
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            width: 1.0,
-                                                            color: AppColors
-                                                                .primaryColor),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(16.0),
-                                                      ),
-                                                      child: ListTile(
-                                                        onTap: () {},
-                                                        leading: const Icon(
-                                                          Icons
-                                                              .chat_bubble_outline,
-                                                          color: AppColors
-                                                              .primaryColor,
-                                                        ),
-                                                        title: const Text(
-                                                            'By Form',
-                                                            style: TextStyle(
-                                                                color: AppColors
-                                                                    .primaryColor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500)),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: screenHeight * 0.03,
-                                                ),
-                                                Center(
-                                                  child: CustomButton(
-                                                    width: double.infinity,
-                                                    height: 50,
-                                                    borderRadius: 15.0,
-                                                    fontSize: 14,
-                                                    backgroundColor:
-                                                        AppColors.primaryColor,
-                                                    text: 'Next',
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (_) =>
-                                                                  const EmergencyRegistration()));
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                          child: FutureBuilder(
+                            future: _getUserLocations(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+                              if (snapshot.hasError) {
+                                return const Center(
+                                    child: Text('Error getting location'));
+                              }
+
+                              Position userPosition = snapshot.data as Position;
+
+                              var sortedMarkers = _markers
+                                  .where((marker) =>
+                                      marker.markerId.value !=
+                                      'current_location')
+                                  .toList();
+
+                              sortedMarkers.sort((a, b) {
+                                double distanceA = _calculateDistance(
+                                    userPosition, a.position);
+                                double distanceB = _calculateDistance(
+                                    userPosition, b.position);
+                                return distanceA.compareTo(distanceB);
+                              });
+
+                              return ListView.builder(
+                                itemCount: sortedMarkers.length * 2,
+                                itemBuilder: (BuildContext context, int index) {
+                                  if (index.isOdd) {
+                                    return const Divider(
+                                      color: Colors.grey,
+                                      thickness: 1.0,
+                                      indent: 20.0,
+                                      endIndent: 20.0,
+                                    );
+                                  }
+
+                                  int itemIndex = index ~/ 2;
+
+                                  var place = sortedMarkers[itemIndex];
+
+                                  return CustomListTile(
+                                    leading: const Icon(
+                                      Icons.location_on_outlined,
+                                      color: AppColors.primaryColor,
+                                    ),
+                                    title: place.infoWindow.title ??
+                                        'Hospital Name',
+                                    subtitle: place.infoWindow.snippet ??
+                                        'Distance: Unknown',
+                                    trailing: CustomButton(
+                                      width: 150,
+                                      height: 40,
+                                      borderRadius: 12.0,
+                                      fontSize: 11,
+                                      backgroundColor: AppColors.primaryColor,
+                                      text: 'Emergency Register',
+                                      onPressed: () {
+                                        Navigator.pop(
+                                            context); // Close the first bottom sheet
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(16)),
                                           ),
+                                          builder: (BuildContext context) {
+                                            return const EmergencyRegistrationBottomSheet();
+                                          },
                                         );
                                       },
-                                    );
-                                  },
-                                ),
+                                    ),
+                                  );
+                                },
                               );
                             },
                           ),
-                        ),
+                        )
                       ],
                     ),
                   );
@@ -356,6 +275,8 @@ class _LocationScreenState extends State<LocationScreen> {
           initialCameraPosition: _defaultCameraPosition,
           myLocationButtonEnabled: true,
           myLocationEnabled: true,
+          mapType: MapType.normal,
+          compassEnabled: true,
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
             _setMapStyle(controller);
@@ -365,9 +286,101 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
+//! Helper function to calculate the distance between two positions
+  double _calculateDistance(Position userPosition, LatLng markerPosition) {
+    return Geolocator.distanceBetween(
+      userPosition.latitude,
+      userPosition.longitude,
+      markerPosition.latitude,
+      markerPosition.longitude,
+    );
+  }
+
+//! Helper function to get the user's current location
+  Future<Position> _getUserLocations() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw Exception('Location services are disabled.');
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        throw Exception('Location permissions are denied');
+      }
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+}
+
+//! Bottom Model Sheet
+class EmergencyRegistrationBottomSheet extends StatelessWidget {
+  const EmergencyRegistrationBottomSheet({super.key});
+
   @override
-  void dispose() {
-    _controllers.asMap().forEach((i, c) => c.dispose());
-    super.dispose();
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    return SizedBox(
+      height: screenHeight * 0.25,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CustomText(
+              text: 'Emergency Registration',
+              size: 22.0,
+              weight: FontWeight.bold,
+            ),
+            const CustomText(
+              text: 'Send details to your nearest hospital',
+              size: 15.0,
+              weight: FontWeight.normal,
+            ),
+            SizedBox(height: screenHeight * 0.03),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildEmergencyOption('By Voice', Icons.keyboard_voice,
+                    onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const VoiceRecorderScreen()));
+                }),
+                _buildEmergencyOption('By Form', Icons.chat_bubble_outline,
+                    onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const EmergencyRegistration()));
+                }),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmergencyOption(String title, IconData icon,
+      {VoidCallback? onTap}) {
+    return Container(
+      height: 60,
+      width: 150,
+      decoration: BoxDecoration(
+        border: Border.all(width: 1.0, color: AppColors.primaryColor),
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: ListTile(
+        onTap: onTap,
+        leading: Icon(icon, color: AppColors.primaryColor),
+        title: Text(
+          title,
+          style: const TextStyle(
+              color: AppColors.primaryColor, fontWeight: FontWeight.w500),
+        ),
+      ),
+    );
   }
 }

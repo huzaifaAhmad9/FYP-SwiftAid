@@ -1,0 +1,2 @@
+C:/Users/kk/OneDrive/Desktop/FYP-SwiftAid/android/app/.cxx/Debug/6r3n3f65/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/kk/OneDrive/Desktop/FYP-SwiftAid/android/app/.cxx/Debug/6r3n3f65/x86_64/CMakeFiles/rebuild_cache.dir
