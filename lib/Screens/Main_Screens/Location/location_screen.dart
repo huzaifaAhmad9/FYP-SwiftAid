@@ -345,8 +345,10 @@ class EmergencyRegistrationBottomSheet extends StatelessWidget {
               children: [
                 _buildEmergencyOption('By Voice', Icons.keyboard_voice,
                     onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const VoiceRecorderScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const VoiceRecorderScreen()));
                 }),
                 _buildEmergencyOption('By Form', Icons.chat_bubble_outline,
                     onTap: () {
