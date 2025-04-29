@@ -1,5 +1,6 @@
 import 'package:swift_aid/Screens/Main_Screens/Location/Registration/emergency_registration_voice.dart';
 import 'package:swift_aid/Screens/Main_Screens/Location/Registration/emergency_registration.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart'; 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:swift_aid/components/custom_listtile.dart';
 import 'package:swift_aid/components/custom_button.dart';
@@ -15,25 +16,61 @@ import 'dart:convert' show json;
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});
-
   @override
   State<LocationScreen> createState() => _LocationScreenState();
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  String mapTheme = '';
+  TutorialCoachMark? tutorialCoachMark;
+  final GlobalKey _menuButtonKey = GlobalKey();
   final Completer<GoogleMapController> _controller = Completer();
   final List<Marker> _markers = [];
+  String mapTheme = '';
   LatLng? _currentLocation;
   static const CameraPosition _defaultCameraPosition = CameraPosition(
     target: LatLng(31.515795241966867, 74.41747899905428),
     zoom: 12,
   );
 
+
   @override
   void initState() {
     super.initState();
     _getUserLocation();
+    WidgetsBinding.instance.addPostFrameCallback((_) => showTutorial());
+  }
+
+  void showTutorial() {
+    tutorialCoachMark = TutorialCoachMark(
+      targets: [
+        TargetFocus(
+          identify: "menu_button",
+          keyTarget: _menuButtonKey,
+          contents: [
+            TargetContent(
+              align: ContentAlign.bottom,
+              child: const Text(
+                "Tap here to search for nearby hospitals.",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ],
+      colorShadow: Colors.black.withOpacity(0.8),
+      textSkip: "SKIP",
+      paddingFocus: 10,
+      opacityShadow: 0.8,
+      onFinish: () {
+      },
+      onClickTarget: (target) {
+        log("Clicked on target: $target");
+      },
+      onSkip: () {
+        log("Tutorial skipped");
+        return true; 
+      },
+    )..show(context: context);
   }
 
   Future<void> _setMapStyle(GoogleMapController controller) async {
@@ -75,7 +112,6 @@ class _LocationScreenState extends State<LocationScreen> {
           ),
         );
       });
-
       _fetchNearbyHospitals();
       _moveCamera(_currentLocation!);
     } catch (e) {
@@ -85,12 +121,10 @@ class _LocationScreenState extends State<LocationScreen> {
 
   Future<void> _fetchNearbyHospitals() async {
     if (_currentLocation == null) return;
-
     final url = AppRoutes.nearbyHospitalsUrl(
       _currentLocation!.latitude,
       _currentLocation!.longitude,
     );
-
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -136,7 +170,6 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -150,6 +183,7 @@ class _LocationScreenState extends State<LocationScreen> {
         backgroundColor: AppColors.primaryColor,
         actions: [
           IconButton(
+            key: _menuButtonKey, 
             icon: const Icon(Icons.more_vert_outlined),
             onPressed: () {
               showModalBottomSheet(
@@ -189,15 +223,12 @@ class _LocationScreenState extends State<LocationScreen> {
                                 return const Center(
                                     child: Text('Error getting location'));
                               }
-
                               Position userPosition = snapshot.data as Position;
-
                               var sortedMarkers = _markers
                                   .where((marker) =>
                                       marker.markerId.value !=
                                       'current_location')
                                   .toList();
-
                               sortedMarkers.sort((a, b) {
                                 double distanceA = _calculateDistance(
                                     userPosition, a.position);
@@ -205,7 +236,6 @@ class _LocationScreenState extends State<LocationScreen> {
                                     userPosition, b.position);
                                 return distanceA.compareTo(distanceB);
                               });
-
                               return ListView.builder(
                                 itemCount: sortedMarkers.length * 2,
                                 itemBuilder: (BuildContext context, int index) {
@@ -217,11 +247,8 @@ class _LocationScreenState extends State<LocationScreen> {
                                       endIndent: 20.0,
                                     );
                                   }
-
                                   int itemIndex = index ~/ 2;
-
                                   var place = sortedMarkers[itemIndex];
-
                                   return CustomListTile(
                                     leading: const Icon(
                                       Icons.location_on_outlined,
@@ -286,7 +313,7 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
-//! Helper function to calculate the distance between two positions
+  //! Helper function to calculate the distance between two positions
   double _calculateDistance(Position userPosition, LatLng markerPosition) {
     return Geolocator.distanceBetween(
       userPosition.latitude,
@@ -296,13 +323,12 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
-//! Helper function to get the user's current location
+  //! Helper function to get the user's current location
   Future<Position> _getUserLocations() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       throw Exception('Location services are disabled.');
     }
-
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -310,7 +336,6 @@ class _LocationScreenState extends State<LocationScreen> {
         throw Exception('Location permissions are denied');
       }
     }
-
     return await Geolocator.getCurrentPosition();
   }
 }
@@ -318,7 +343,6 @@ class _LocationScreenState extends State<LocationScreen> {
 //! Bottom Model Sheet
 class EmergencyRegistrationBottomSheet extends StatelessWidget {
   const EmergencyRegistrationBottomSheet({super.key});
-
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
