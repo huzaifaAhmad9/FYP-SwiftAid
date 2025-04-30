@@ -29,6 +29,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             'Password': event.password,
           }),
         );
+        log('Status code: ${response.statusCode}');
+        log('Response body: ${response.body}');
 
         final data = json.decode(response.body);
 

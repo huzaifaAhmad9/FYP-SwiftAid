@@ -1,4 +1,5 @@
 import 'package:swift_aid/Screens/auth/SignUp/sign.dart';
+import 'package:swift_aid/Screens/auth/SignUp/verify_otp.dart';
 import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/Screens/auth/Login/login.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
@@ -77,7 +78,7 @@ class _OnBoardedCompletedState extends State<OnBoardedCompleted> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Sign(),
+                      builder: (context) => const VerifyOtp(),
                     ),
                   );
                 }),

@@ -1,5 +1,6 @@
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
+import 'package:swift_aid/Screens/auth/SignUp/verify_otp.dart';
 import 'package:swift_aid/Screens/Main_Screens/main_home.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_state.dart';
@@ -269,7 +270,7 @@ class _PatientState extends State<Patient> {
               // Trigger navigation after the dialog is shown
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const MainHome()));
+                    MaterialPageRoute(builder: (_) => const VerifyOtp()));
               });
             }
 
