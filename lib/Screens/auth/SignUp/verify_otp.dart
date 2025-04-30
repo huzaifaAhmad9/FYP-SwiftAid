@@ -46,18 +46,6 @@ class _VerifyOtpState extends State<VerifyOtp> {
     });
   }
 
-  @override
-  void dispose() {
-    for (var node in _focusNodes) {
-      node.dispose();
-    }
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    _timer?.cancel();
-    super.dispose();
-  }
-
   void _onOtpChange(int index, String value) {
     if (value.isNotEmpty && index < 3) {
       FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
@@ -216,5 +204,17 @@ class _VerifyOtpState extends State<VerifyOtp> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    for (var node in _focusNodes) {
+      node.dispose();
+    }
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    _timer?.cancel();
+    super.dispose();
   }
 }
