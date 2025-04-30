@@ -2,10 +2,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_state.dart';
+import 'package:swift_aid/api_routes/app_routes.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'dart:developer' show log;
+import 'dart:convert';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -14,35 +17,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc() : super(AuthInitialState()) {
     on<SignupEvent>((event, emit) async {
-      emit((AuthloadingState()));
-      try {
-        UserCredential userCredential =
-            await _auth.createUserWithEmailAndPassword(
-                email: event.email, password: event.password);
-        User? user = userCredential.user;
-        if (user != null) {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('auth_token', user.uid);
+      emit(AuthloadingState());
 
-          await _db.child('users').child(user.uid).set({
-            'name': event.name,
-            'email': event.email,
-            'createdAt': DateTime.now().toIso8601String(),
-          });
-          emit(AuthSucessState(message: 'User created  successfully'));
-        }
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'email-already-in-use') {
-          emit(AuthErrorState(message: 'The email address is already in use.'));
-        } else if (e.code == 'weak-password') {
-          emit(AuthErrorState(message: 'The password is too weak.'));
-        } else if (e.code == 'invalid-email') {
-          emit(AuthErrorState(message: 'The email address is invalid.'));
+      try {
+        final response = await http.post(
+          Uri.parse(AppRoutes.userRegister),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'Name': event.name,
+            'Email': event.email,
+            'Password': event.password,
+          }),
+        );
+
+        final data = json.decode(response.body);
+
+        if (response.statusCode == 201) {
+          // Save token in local storage
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('auth_token', data['token']);
+
+          emit(AuthSucessState(message: data['msg']));
         } else {
-          emit(AuthErrorState(message: 'Failed to sign up: ${e.message}'));
+          emit(AuthErrorState(message: data['msg'] ?? 'Registration failed'));
         }
       } catch (e) {
         emit(AuthErrorState(message: 'Unexpected error occurred: $e'));
+        log(e.toString());
       }
     });
 

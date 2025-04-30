@@ -1,7 +1,7 @@
 class AppRoutes {
   static const String mapApi = "AIzaSyDaaNW6khrCkxJesgZCZ9lEqGqfPS6373Q";
 
-  static const String baseUrl = "http://192.168.0.101:3000/api";
+  static const String baseUrl = "http://fyp.pelarinfruit.com/api";
   static String nearbyHospitalsUrl(double latitude, double longitude) {
     return 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
         'location=$latitude,$longitude&radius=3500&type=hospital&key=$mapApi';
