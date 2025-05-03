@@ -1,3 +1,4 @@
+import 'package:swift_aid/Screens/auth/Forget_password/new_password.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
@@ -161,7 +162,7 @@ class _ForgetPasssordState extends State<ForgetPasssord> {
             children: <Widget>[
               2.heightBox,
               const Text(
-                'Enter your email address to reset your password and link will be sent on your gmail wherer you create new password:',
+                'Enter your email address to reset your password.',
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
               ),
               3.heightBox,
@@ -201,12 +202,16 @@ class _ForgetPasssordState extends State<ForgetPasssord> {
               ),
               5.heightBox,
               CustomButton(
-                text: "Reset ",
+                text: "Submit",
                 onPressed: () {
-                  final email = _email.text.trim();
-                  if (_formKey.currentState!.validate()) {
-                    sendResetPasssword(email);
-                  }
+                  // final email = _email.text.trim();
+                  // if (_formKey.currentState!.validate()) {
+                  //   sendResetPasssword(email);
+                  // }
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const PasswordResetScreen()));
                 },
                 height: 50,
                 width: 200,

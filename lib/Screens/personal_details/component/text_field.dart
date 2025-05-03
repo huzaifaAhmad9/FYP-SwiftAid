@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Required for input formatters
 
 class CustomTextFormField extends StatelessWidget {
   final String? hintText;
@@ -19,13 +20,15 @@ class CustomTextFormField extends StatelessWidget {
   final int? maxLines;
   final int? minLines;
   final FocusNode? focusNode;
+  final bool obscureText;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextFormField({
     super.key,
     this.hintText,
     this.labelText,
     this.labelStyle,
-    this.hintStyle, // Optional hintStyle
+    this.hintStyle,
     this.controller,
     this.validator,
     this.cursor,
@@ -39,7 +42,9 @@ class CustomTextFormField extends StatelessWidget {
     this.prefixIcon,
     this.maxLines,
     this.minLines,
+    this.obscureText = false,
     this.focusNode,
+    this.inputFormatters,
   });
 
   @override
@@ -54,9 +59,11 @@ class CustomTextFormField extends StatelessWidget {
       maxLines: maxLines,
       minLines: minLines,
       focusNode: focusNode,
+      obscureText: obscureText,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: hintStyle, // Applying hintStyle
+        hintStyle: hintStyle,
         labelText: labelText,
         labelStyle: labelStyle ?? TextStyle(color: borderColor),
         suffixIcon: suffixIcon,

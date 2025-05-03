@@ -11,6 +11,7 @@ dependencies:
   scroll_wheel_date_picker: ^0.0.2+1
   cupertino_height_picker: ^1.0.0
   animated_weight_picker: ^1.0.3
+  font_awesome_flutter: ^10.7.0
   google_maps_flutter: ^2.7.0
   permission_handler: ^11.3.1
   mapbox_maps_flutter: ^2.5.1
