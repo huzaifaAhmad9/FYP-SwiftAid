@@ -14,6 +14,11 @@ class SignupEvent extends AuthEvent {
   SignupEvent(this.name, {required this.email, required this.password});
 }
 
+class VerifyOtpEvents extends AuthEvent {
+  final String otp;
+  VerifyOtpEvents(this.otp);
+}
+
 class GoogleSignInEvent extends AuthEvent {}
 
 class LogoutEvent extends AuthEvent {}

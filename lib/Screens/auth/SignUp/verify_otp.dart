@@ -1,7 +1,14 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:swift_aid/Screens/Main_Screens/main_home.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' show log;
 import 'dart:async';
+
+import 'package:swift_aid/bloc/auth_bloc/auth_bloc.dart';
+import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
+import 'package:swift_aid/bloc/auth_bloc/auth_state.dart';
+import 'package:swift_aid/components/responsive_sized_box.dart';
 
 class VerifyOtp extends StatefulWidget {
   const VerifyOtp({super.key});
@@ -56,10 +63,11 @@ class _VerifyOtpState extends State<VerifyOtp> {
 
   void _verifyOtp() {
     String otp = _controllers.map((e) => e.text).join();
-    //! Add OTP verification logic here
+    context.read<AuthBloc>().add(VerifyOtpEvents(otp));
+    customDialogue();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text("OTP Verified: $otp"),
+        content: Center(child: Text("OTP Verified: $otp")),
         backgroundColor: Colors.green,
       ),
     );
@@ -73,6 +81,98 @@ class _VerifyOtpState extends State<VerifyOtp> {
     }
     FocusScope.of(context).requestFocus(_focusNodes[0]);
     _startTimer();
+  }
+
+  void customDialogue() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthloadingState) {
+              return _buildDialog(
+                context,
+                content: const Row(
+                  children: [
+                    Spacer(),
+                    SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    Spacer(),
+                  ],
+                ),
+                title: "Loading...",
+              );
+            }
+
+            if (state is AuthSucessState) {
+              log("Success state triggered");
+
+              // Show success dialog first
+              _buildDialog(
+                context,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.message,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    2.heightBox,
+                    const Icon(
+                      Icons.check_circle,
+                      color: AppColors.primaryColor,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+                title: "Success",
+              );
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MainHome()),
+                  (Route<dynamic> route) => false,
+                );
+              });
+            }
+
+            if (state is AuthErrorState) {
+              return _buildDialog(
+                context,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.message,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    2.heightBox,
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+                title: "Error",
+              );
+            }
+
+            return const SizedBox();
+          },
+        );
+      },
+    );
   }
 
   String _formatTime(int seconds) {
@@ -217,4 +317,12 @@ class _VerifyOtpState extends State<VerifyOtp> {
     _timer?.cancel();
     super.dispose();
   }
+}
+
+Widget _buildDialog(BuildContext context,
+    {required Widget content, required String title}) {
+  return AlertDialog(
+    title: Text(title),
+    content: content,
+  );
 }

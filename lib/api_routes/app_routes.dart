@@ -10,7 +10,8 @@ class AppRoutes {
   // === Auth APIs ===
   static const String userRegister = "$baseUrl/user/register";
   static const String userLogin = "$baseUrl/user/login";
-  static String userVerify(String token) => "$baseUrl/user/verify/$token";
+  static String userVerify() => '$baseUrl/user/verify';
+
   static const String userResendOTP = "$baseUrl/user/resndOTP";
   static const String userForgotPassword = "$baseUrl/user/forgot-password";
   static const String userResetPassword = "$baseUrl/user/reset-password";

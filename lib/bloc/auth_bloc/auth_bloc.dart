@@ -95,51 +95,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginEvent>((event, emit) async {
       emit(AuthloadingState());
       try {
-        log("Attempting to sign in with email: ${event.email}");
+        final response = await http.post(
+          Uri.parse(AppRoutes.userLogin),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'Email': event.email,
+            'Password': event.password,
+          }),
+        );
+        log('Status code: ${response.statusCode}');
+        log('Response body: ${response.body}');
+        final data = json.decode(response.body);
 
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-            email: event.email, password: event.password);
-
-        User? user = userCredential.user;
-
-        if (user != null) {
+        if (response.statusCode == 200) {
           final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('auth_token', user.uid);
+          await prefs.setString('auth_token', data['token']);
 
-          log("Login successful for user: ${user.email}");
-          emit(AuthSucessState(message: 'Login successful.'));
+          emit(AuthSucessState(message: data['msg'] ?? 'Login successful'));
         } else {
-          log("Failed to sign in: User is null");
-          throw Exception('Failed to sign in with email and password.');
-        }
-      } on FirebaseAuthException catch (e) {
-        log("Error Code: ${e.code}");
-        switch (e.code) {
-          case 'user-not-found':
-            log("Error: No user found with email: ${event.email}");
-            emit(AuthErrorState(message: 'No user found with this email.'));
-            break;
-          case 'wrong-password':
-            log("Error: Incorrect password for email: ${event.email}");
-            emit(AuthErrorState(message: 'Incorrect password.'));
-            break;
-          case 'invalid-email':
-            log("Error: Invalid email format: ${event.email}");
-            emit(AuthErrorState(message: 'The email address is invalid.'));
-            break;
-          case 'invalid-credential':
-            emit(AuthErrorState(
-                message:
-                    'The credentials provided are invalid or have expired.'));
-            break;
-          default:
-            log("Unhandled FirebaseAuthException code: ${e.code}, message: ${e.message}");
-            emit(AuthErrorState(
-                message: 'Unexpected error occurred: ${e.message}'));
+          emit(AuthErrorState(message: data['msg'] ?? 'Login failed'));
         }
       } catch (e) {
         log("Unexpected error: $e");
-        emit(AuthErrorState(message: e.toString()));
+        emit(AuthErrorState(message: 'Unexpected error: $e'));
       }
     });
 
@@ -175,7 +153,37 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthErrorState(message: 'Unexpected error occurred: $e'));
       }
     });
+    on<VerifyOtpEvents>((event, emit) async {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('auth_token');
 
+        final response = await http.get(
+          Uri.parse(
+              '${AppRoutes.userVerify()}/${event.otp}'), // Sending OTP as a part of the URL
+          headers: {
+            'Content-Type': 'application/json',
+            'auth-token-user': '$token', // Sending token in headers
+          },
+        );
+
+        log('Status code: ${response.statusCode}');
+        log('Response body: ${response.body}');
+
+        final data = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+          emit(AuthSucessState(message: data['msg']));
+          log("otp verified");
+        } else {
+          emit(AuthErrorState(
+              message: data['msg'] ?? 'OTP Verification Failed'));
+          log(data['msg']);
+        }
+      } catch (e) {
+        emit(AuthErrorState(message: 'Unexpected error occurred: $e'));
+        log(e.toString());
+      }
+    });
     on<ResetPasswordEvent>((event, emit) async {
       emit(AuthloadingState());
       try {
