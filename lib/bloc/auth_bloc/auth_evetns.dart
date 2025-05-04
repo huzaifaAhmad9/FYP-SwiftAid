@@ -24,8 +24,12 @@ class GoogleSignInEvent extends AuthEvent {}
 class LogoutEvent extends AuthEvent {}
 
 class ResetPasswordEvent extends AuthEvent {
-  final String newpassword;
-  ResetPasswordEvent({required this.newpassword});
+  final String otp;
+  final String password;
+  ResetPasswordEvent(
+    this.otp,
+    this.password,
+  );
 }
 
 class ForgetPasswordEvent extends AuthEvent {

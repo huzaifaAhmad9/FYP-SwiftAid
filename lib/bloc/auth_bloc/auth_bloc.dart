@@ -120,50 +120,51 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthErrorState(message: 'Unexpected error: $e'));
       }
     });
-
     on<ForgetPasswordEvent>((event, emit) async {
       emit(AuthloadingState());
+
       try {
-        DatabaseReference dbRef = FirebaseDatabase.instance.ref('users');
+        final response = await http.post(
+          Uri.parse(AppRoutes.userForgotPassword),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'Email': event.email.trim()}),
+        );
 
-        DataSnapshot snapshot = await dbRef.get();
+        final responseData = jsonDecode(response.body);
 
-        if (snapshot.exists) {
-          bool emailFound = false;
-          for (var child in snapshot.children) {
-            String email = child.child('email').value.toString();
-            if (email == event.email) {
-              emailFound = true;
-            }
-          }
+        if (response.statusCode == 200) {
+          final message = responseData['msg'];
+          final newAuthToken = responseData['token'];
 
-          if (emailFound) {
-            await _auth.sendPasswordResetEmail(email: event.email);
-            emit(AuthSucessState(message: 'Email sent to your Gmail.'));
-          } else {
-            emit(AuthErrorState(message: 'No user found with this email.'));
-          }
+          final prefs = await SharedPreferences.getInstance();
+
+          await prefs.remove('auth_token');
+
+          
+          await prefs.setString('auth_token', newAuthToken);
+
+          emit(AuthSucessState(message: message));
         } else {
-          emit(AuthErrorState(message: 'No users found in the database.'));
+          emit(AuthErrorState(
+            message: responseData['msg'] ?? 'Something went wrong',
+          ));
         }
-      } on FirebaseAuthException catch (e) {
-        emit(AuthErrorState(
-            message: 'Error sending password reset email: ${e.message}'));
       } catch (e) {
         emit(AuthErrorState(message: 'Unexpected error occurred: $e'));
       }
     });
+
     on<VerifyOtpEvents>((event, emit) async {
       try {
+        emit(AuthloadingState());
         final prefs = await SharedPreferences.getInstance();
         final token = prefs.getString('auth_token');
 
         final response = await http.get(
-          Uri.parse(
-              '${AppRoutes.userVerify()}/${event.otp}'), // Sending OTP as a part of the URL
+          Uri.parse('${AppRoutes.userVerify()}/${event.otp}'),
           headers: {
             'Content-Type': 'application/json',
-            'auth-token-user': '$token', // Sending token in headers
+            'auth-token-user': '$token',
           },
         );
 
@@ -184,18 +185,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         log(e.toString());
       }
     });
+
     on<ResetPasswordEvent>((event, emit) async {
-      emit(AuthloadingState());
       try {
-        User? user = _auth.currentUser;
-        if (user != null) {
-          await user.updatePassword(event.newpassword);
-          emit(AuthSucessState(message: 'Password reset successful.'));
+        emit(AuthloadingState());
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('auth_token');
+        final response = await http.post(
+          Uri.parse(
+              AppRoutes.userResetPassword), // replace with your actual endpoint
+          headers: {
+            'Content-Type': 'application/json',
+            'auth-token-user': '$token',
+          },
+          body: jsonEncode({
+            'otp': event.otp,
+            'newPassword': event.password,
+          }),
+        );
+
+        final responseData = jsonDecode(response.body);
+
+        if (response.statusCode == 200) {
+          emit(AuthSucessState(message: responseData['msg']));
         } else {
-          emit(AuthErrorState(message: 'User is not logged in.'));
+          emit(AuthErrorState(
+              message: responseData['msg'] ?? 'Password reset failed.'));
         }
       } catch (e) {
-        emit(AuthErrorState(message: 'Unexpected error occurred: $e'));
+        emit(AuthErrorState(message: 'Unexpected error: $e'));
       }
     });
 

@@ -1,6 +1,13 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'dart:developer';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:swift_aid/Screens/auth/Login/login.dart';
 import 'package:swift_aid/Screens/personal_details/component/text_field.dart';
+import 'package:swift_aid/bloc/auth_bloc/auth_bloc.dart';
+import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
+import 'package:swift_aid/bloc/auth_bloc/auth_state.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swift_aid/components/custom_button.dart';
@@ -24,10 +31,104 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   bool _isConfirmPasswordHidden = true;
   bool _showVerifiedIcon = false;
 
+  void customDialogue() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthloadingState) {
+              return _buildDialog(
+                context,
+                content: const Row(
+                  children: [
+                    Spacer(),
+                    SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    Spacer(),
+                  ],
+                ),
+                title: "Loading...",
+              );
+            }
+
+            if (state is AuthSucessState) {
+              log("Success state triggered");
+
+              _buildDialog(
+                context,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.message,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    2.heightBox,
+                    const Icon(
+                      Icons.check_circle,
+                      color: AppColors.primaryColor,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+                title: "Success",
+              );
+
+              // Trigger navigation after the dialog is shown
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => const Login()));
+              });
+            }
+
+            if (state is AuthErrorState) {
+              return _buildDialog(
+                context,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.message,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    2.heightBox,
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+                title: "Error",
+              );
+            }
+
+            return const SizedBox();
+          },
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _otpController.addListener(_checkOtpLength);
+  }
+
+  void reset(String otp, String password) {
+    context.read<AuthBloc>().add(ResetPasswordEvent(otp, password));
+    customDialogue();
   }
 
   @override
@@ -185,9 +286,18 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      //! Logic here
-      // String newPassword = _newPasswordController.text;
-      // String otp = _otpController.text;
+      String newPassword = _confirmPasswordController.text.trim();
+      String otp = _otpController.text.trim();
+
+      reset(otp, newPassword);
     }
+  }
+
+  Widget _buildDialog(BuildContext context,
+      {required Widget content, required String title}) {
+    return AlertDialog(
+      title: Text(title),
+      content: content,
+    );
   }
 }
