@@ -1,13 +1,16 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
 import 'package:swift_aid/components/custom_listtile.dart';
-import 'package:swift_aid/components/custom_dialog.dart';
 import 'package:swift_aid/Screens/auth/Login/login.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_bloc.dart';
+import 'package:swift_aid/components/custom_dialog.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'dart:io' show File;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,6 +21,8 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isSwitched = false;
+  File? profileImage;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,26 +37,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Align(
                   alignment: Alignment.topRight,
-                  child: Image.asset(
-                    'assets/images/design.png',
-                  ),
+                  child: Image.asset('assets/images/design.png'),
                 ),
                 Column(
                   children: [
-                    const SizedBox(
-                      height: 100,
-                    ),
+                    const SizedBox(height: 100),
                     Stack(
                       clipBehavior: Clip.none,
                       children: [
                         Container(
                           width: 90,
                           height: 90,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.whiteColor,
                             shape: BoxShape.circle,
                             image: DecorationImage(
-                              image: AssetImage('assets/images/profile.jpg'),
+                              image: profileImage != null
+                                  ? FileImage(profileImage!)
+                                  : const AssetImage(
+                                          'assets/images/profile.jpg')
+                                      as ImageProvider,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -59,37 +64,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Positioned(
                           right: 3,
                           bottom: 1,
-                          child: Container(
-                            width: 20,
-                            height: 20,
-                            decoration: const BoxDecoration(
-                              color: AppColors.whiteColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.camera_alt_outlined,
-                                color: AppColors.primaryColor,
-                                size: 13,
+                          child: GestureDetector(
+                            onTap: _showImagePickerSheet,
+                            child: Container(
+                              width: 20,
+                              height: 20,
+                              decoration: const BoxDecoration(
+                                color: AppColors.whiteColor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.camera_alt_outlined,
+                                  color: AppColors.primaryColor,
+                                  size: 13,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
                     const Center(
-                      child: Text('Amelia Renata',
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: AppColors.whiteColor,
-                              fontWeight: FontWeight.bold)),
+                      child: Text(
+                        'Amelia Renata',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: AppColors.whiteColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    const SizedBox(
-                      height: 30,
-                    ),
+                    const SizedBox(height: 30),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -172,16 +179,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.only(left: 12),
                 child: Column(
                   children: [
-                    const SizedBox(
-                      height: 25,
-                    ),
+                    const SizedBox(height: 25),
                     CustomListTile(
                       leading: Container(
                         height: 45,
                         width: 45,
                         decoration: BoxDecoration(
-                            color: AppColors.textColor.withOpacity(.4),
-                            shape: BoxShape.circle),
+                          color: AppColors.textColor.withOpacity(.4),
+                          shape: BoxShape.circle,
+                        ),
                         child: Image.asset('assets/images/doc.png'),
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios_rounded),
@@ -197,8 +203,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: 45,
                         width: 45,
                         decoration: BoxDecoration(
-                            color: AppColors.textColor.withOpacity(.4),
-                            shape: BoxShape.circle),
+                          color: AppColors.textColor.withOpacity(.4),
+                          shape: BoxShape.circle,
+                        ),
                         child: const Icon(
                           Icons.notifications_none_outlined,
                           color: AppColors.primaryColor,
@@ -217,9 +224,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           },
                         ),
                       ),
-                      onTap: () {
-                        //! --------Functioality---------
-                      },
                       title: 'Notifications',
                     ),
                     const Divider(
@@ -232,8 +236,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: 45,
                         width: 45,
                         decoration: BoxDecoration(
-                            color: AppColors.textColor.withOpacity(.4),
-                            shape: BoxShape.circle),
+                          color: AppColors.textColor.withOpacity(.4),
+                          shape: BoxShape.circle,
+                        ),
                         child: Image.asset('assets/images/chat.png'),
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios_rounded),
@@ -252,16 +257,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: 45,
                         width: 45,
                         decoration: BoxDecoration(
-                            color: AppColors.textColor.withOpacity(.4),
-                            shape: BoxShape.circle),
+                          color: AppColors.textColor.withOpacity(.4),
+                          shape: BoxShape.circle,
+                        ),
                         child: Image.asset('assets/images/danger.png'),
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios_rounded),
                       title: 'Logout',
                       titleStyle: const TextStyle(
-                          color: AppColors.redColor,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold),
+                        color: AppColors.redColor,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -272,8 +279,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
+//! Bottom Model Sheet
+  void _showImagePickerSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Wrap(
+            children: [
+              ListTile(
+                  leading: const Icon(
+                    Icons.photo_library,
+                    color: AppColors.primaryColor,
+                  ),
+                  title: const Text("Pick from Gallery"),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    _pickImage(
+                      ImageSource.gallery,
+                    );
+                  }),
+              ListTile(
+                leading: const Icon(
+                  Icons.camera_alt,
+                  color: AppColors.primaryColor,
+                ),
+                title: const Text("Take from Camera"),
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+//! Pick image Function
+  Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source, imageQuality: 85);
+
+    if (pickedFile != null) {
+      setState(() {
+        profileImage = File(pickedFile.path);
+      });
+    }
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
 }
 
+//! LogOut Dailogs
 void showCustomDialog(BuildContext context) {
   showDialog(
     context: context,
