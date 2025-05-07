@@ -1,4 +1,7 @@
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/Screens/auth/SignUp/verify_otp.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
@@ -542,9 +545,11 @@ class _DoctorState extends State<Doctor> {
   late TextEditingController _name;
   late TextEditingController _email;
   late TextEditingController _password;
+  late TextEditingController _number;
   late FocusNode _nameFocus;
   late FocusNode _emailFocus;
   late FocusNode _passwordFocus;
+  late FocusNode _numberFocus;
   bool _obscurePassword = true;
   bool _isEmailValid = false;
   bool _isChecked = false;
@@ -553,9 +558,9 @@ class _DoctorState extends State<Doctor> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return BlocBuilder<AuthBloc, AuthState>(
+        return BlocBuilder<HospitalAuthBloc, HospitalAuthState>(
           builder: (context, state) {
-            if (state is AuthloadingState) {
+            if (state is HospitalLoading) {
               return _buildDialog(
                 context,
                 content: const Row(
@@ -575,7 +580,7 @@ class _DoctorState extends State<Doctor> {
               );
             }
 
-            if (state is AuthSucessState) {
+            if (state is HospitalSuccess) {
               log("Success state triggered");
 
               // Show success dialog first
@@ -608,14 +613,14 @@ class _DoctorState extends State<Doctor> {
               });
             }
 
-            if (state is AuthErrorState) {
+            if (state is HospitalFailure) {
               return _buildDialog(
                 context,
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      state.message,
+                      state.error,
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
@@ -643,10 +648,10 @@ class _DoctorState extends State<Doctor> {
     final email = _email.text.trim();
     final password = _password.text.trim();
     final name = _name.text.trim();
+    final number = _number.text.trim();
 
-    context
-        .read<AuthBloc>()
-        .add(SignupEvent(email: email, password: password, name));
+    context.read<HospitalAuthBloc>().add(RegisterHospital(
+        email: email, password: password, name: name, phone: number));
     customDialogue();
   }
 
@@ -658,10 +663,12 @@ class _DoctorState extends State<Doctor> {
     _name = TextEditingController();
     _email = TextEditingController();
     _password = TextEditingController();
+    _number = TextEditingController();
 
     _nameFocus = FocusNode();
     _emailFocus = FocusNode();
     _passwordFocus = FocusNode();
+    _numberFocus = FocusNode();
     _email.addListener(_checkEmail);
 
     _nameFocus.addListener(() {
@@ -673,6 +680,9 @@ class _DoctorState extends State<Doctor> {
     _passwordFocus.addListener(() {
       setState(() {});
     });
+    _numberFocus.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -680,9 +690,11 @@ class _DoctorState extends State<Doctor> {
     _name.dispose();
     _email.dispose();
     _password.dispose();
+    _number.dispose();
     _nameFocus.dispose();
     _emailFocus.dispose();
     _passwordFocus.dispose();
+    _numberFocus.dispose();
     super.dispose();
   }
 
@@ -710,20 +722,8 @@ class _DoctorState extends State<Doctor> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
-                  Container(
-                    height: 120,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      color: AppColors.lightGrey.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.camera_alt_outlined,
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
                   const SizedBox(
-                    height: 20,
+                    height: 40,
                   ),
                   CustomField(
                     controller: _name,
@@ -824,15 +824,16 @@ class _DoctorState extends State<Doctor> {
                     height: 20,
                   ),
                   CustomField(
-                    controller: _name,
+                    controller: _number,
                     hintText: "Enter your Number",
                     obscureText: false,
-                    focusNode: _nameFocus,
+                    focusNode: _numberFocus,
                     prefixIcon: Image.asset(
-                      'assets/images/user.png',
-                      height: 20,
-                      width: 20,
-                      color: _nameFocus.hasFocus
+                      'assets/images/phone.png',
+                      scale: 0.3,
+                      height: 0,
+                      width: 0,
+                      color: _numberFocus.hasFocus
                           ? const Color.fromARGB(255, 18, 109, 100)
                           : Colors.grey,
                     ),
@@ -846,54 +847,6 @@ class _DoctorState extends State<Doctor> {
                   ),
                   const SizedBox(
                     height: 20,
-                  ),
-                  CustomField(
-                    controller: _name,
-                    hintText: "Hospital Location",
-                    obscureText: false,
-                    focusNode: _nameFocus,
-                    prefixIcon: Image.asset(
-                      'assets/images/user.png',
-                      height: 20,
-                      width: 20,
-                      color: _nameFocus.hasFocus
-                          ? const Color.fromARGB(255, 18, 109, 100)
-                          : Colors.grey,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomField(
-                    controller: _name,
-                    hintText: "Enter your Timings",
-                    obscureText: false,
-                    focusNode: _nameFocus,
-                    prefixIcon: Image.asset(
-                      'assets/images/user.png',
-                      height: 20,
-                      width: 20,
-                      color: _nameFocus.hasFocus
-                          ? const Color.fromARGB(255, 18, 109, 100)
-                          : Colors.grey,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomField(
-                    controller: _name,
-                    hintText: "Staff Members",
-                    obscureText: false,
-                    focusNode: _nameFocus,
-                    prefixIcon: Image.asset(
-                      'assets/images/user.png',
-                      height: 20,
-                      width: 20,
-                      color: _nameFocus.hasFocus
-                          ? const Color.fromARGB(255, 18, 109, 100)
-                          : Colors.grey,
-                    ),
                   ),
                   const SizedBox(
                     height: 5,
