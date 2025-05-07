@@ -1,7 +1,15 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:developer' show log;
+
 import 'package:flutter/services.dart' show HapticFeedback;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swift_aid/Models/user_model.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
+import 'package:swift_aid/bloc/user_bloc/file_upload_cubit.dart';
+import 'package:swift_aid/bloc/user_bloc/user_bloc.dart';
+import 'package:swift_aid/bloc/user_bloc/user_event.dart';
+import 'package:swift_aid/bloc/user_bloc/user_state.dart';
 import 'package:swift_aid/components/custom_listtile.dart';
 import 'package:swift_aid/Screens/auth/Login/login.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_bloc.dart';
@@ -22,6 +30,28 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isSwitched = false;
   File? profileImage;
+  UserModel? user;
+  bool isLoading = true;
+  @override
+  void initState() {
+    super.initState();
+    retrieveUserData();
+  }
+
+  Future<void> retrieveUserData() async {
+    _loadProfileImage();
+    context.read<UserBloc>().add(FetchUserEvent());
+  }
+
+  Future<void> _loadProfileImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final imagePath = prefs.getString('profileImagePath');
+    if (imagePath != null) {
+      setState(() {
+        profileImage = File(imagePath);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,21 +75,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        Container(
-                          width: 90,
-                          height: 90,
-                          decoration: BoxDecoration(
-                            color: AppColors.whiteColor,
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: profileImage != null
-                                  ? FileImage(profileImage!)
-                                  : const AssetImage(
-                                          'assets/images/profile.jpg')
-                                      as ImageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                        BlocBuilder<UserBloc, UserState>(
+                          builder: (BuildContext context, UserState state) {
+                            return Container(
+                              width: 90,
+                              height: 90,
+                              decoration: BoxDecoration(
+                                color: AppColors.whiteColor,
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: profileImage != null
+                                      ? FileImage(profileImage!)
+                                      : const AssetImage(
+                                              'assets/images/profile.jpg')
+                                          as ImageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         Positioned(
                           right: 3,
@@ -86,15 +120,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    const Center(
-                      child: Text(
-                        'Amelia Renata',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: AppColors.whiteColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    BlocBuilder<UserBloc, UserState>(
+                      builder: (context, state) {
+                        if (state is UserLoadedState) {
+                          return Center(
+                            child: Text(
+                              state.userModel.name!,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: AppColors.whiteColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        } else if (state is UserLoadingState) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.whiteColor,
+                              strokeWidth: 2,
+                            ),
+                          );
+                          // } else {
+                          //   return const Center(
+                          //     child: Text(
+                          //       'Error loading user',
+                          //       style: TextStyle(
+                          //         fontSize: 18,
+                          //         color: AppColors.whiteColor,
+                          //         fontWeight: FontWeight.bold,
+                          //       ),
+                          //     ),
+                          //   );
+                          // }
+                        } else if (state is UserErrorState) {
+                          return Center(
+                            child: Text(
+                              state.message,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: AppColors.whiteColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
                     ),
                     const SizedBox(height: 30),
                     Row(
@@ -328,9 +400,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final pickedFile = await picker.pickImage(source: source, imageQuality: 85);
 
     if (pickedFile != null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('profileImagePath', pickedFile.path);
       setState(() {
         profileImage = File(pickedFile.path);
       });
+      if (mounted) {
+        log('Picked file path: ${pickedFile.path}');
+
+        log(" before file uploaded trigger");
+        context.read<FileUploadCubit>().uploadFile(pickedFile.path);
+        log(" afer file uploaded trigger");
+      }
     }
     if (mounted) {
       Navigator.pop(context);

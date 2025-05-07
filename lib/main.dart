@@ -3,6 +3,8 @@ import 'package:swift_aid/bloc/auth_bloc/auth_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:swift_aid/bloc/user_bloc/file_upload_cubit.dart';
+import 'package:swift_aid/bloc/user_bloc/user_bloc.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -10,7 +12,18 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(BlocProvider(create: (context) => AuthBloc(), child: const MyApp()));
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider<AuthBloc>(
+        create: (context) => AuthBloc(),
+      ),
+      BlocProvider<UserBloc>(create: (_) => UserBloc()),
+      BlocProvider(
+        create: (context) => FileUploadCubit(),
+      )
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
