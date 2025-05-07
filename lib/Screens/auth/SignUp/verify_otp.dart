@@ -1,3 +1,5 @@
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/Screens/Main_Screens/main_home.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
@@ -10,7 +12,8 @@ import 'dart:developer' show log;
 import 'dart:async' show Timer;
 
 class VerifyOtp extends StatefulWidget {
-  const VerifyOtp({super.key});
+  final String userType;
+  const VerifyOtp({super.key, required this.userType});
 
   @override
   State<VerifyOtp> createState() => _VerifyOtpState();
@@ -62,7 +65,11 @@ class _VerifyOtpState extends State<VerifyOtp> {
 
   void _verifyOtp() {
     String otp = _controllers.map((e) => e.text).join();
-    context.read<AuthBloc>().add(VerifyOtpEvents(otp));
+    if (widget.userType == "hospital") {
+      context.read<HospitalAuthBloc>().add(VerifyHospitalEmail(otp));
+    } else {
+      context.read<AuthBloc>().add(VerifyOtpEvents(otp));
+    }
     customDialogue();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

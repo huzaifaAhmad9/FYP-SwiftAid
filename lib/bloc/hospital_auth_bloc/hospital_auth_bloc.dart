@@ -11,7 +11,7 @@ class HospitalAuthBloc extends Bloc<HospitalAuthEvent, HospitalAuthState> {
   HospitalAuthBloc() : super(HospitalInitial()) {
     on<RegisterHospital>(_onRegister);
     // on<LoginHospital>(_onLogin);
-    // on<VerifyHospitalEmail>(_onVerifyEmail);
+    on<VerifyHospitalEmail>(_onVerifyEmail);
     // on<ResendHospitalOtp>(_onResendOtp);
     // on<ForgotHospitalPassword>(_onForgotPassword);
     // on<ResetHospitalPassword>(_onResetPassword);
@@ -23,7 +23,9 @@ class HospitalAuthBloc extends Bloc<HospitalAuthEvent, HospitalAuthState> {
     try {
       final response = await http.post(
         Uri.parse(AppRoutes.hospitalRegister),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: json.encode({
           'Name': event.name,
           'Email': event.email,
@@ -60,10 +62,37 @@ class HospitalAuthBloc extends Bloc<HospitalAuthEvent, HospitalAuthState> {
 //     }
 //   }
 
-//   Future<void> _onVerifyEmail(
-//       VerifyHospitalEmail event, Emitter<HospitalAuthState> emit) async {
-//     emit(HospitalLoading());
-//   }
+  Future<void> _onVerifyEmail(
+      VerifyHospitalEmail event, Emitter<HospitalAuthState> emit) async {
+    emit(HospitalLoading());
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('hospital_auth_token');
+
+      final response = await http.get(
+        Uri.parse('${AppRoutes.hospitalVerify()}/${event.otp}'),
+        headers: {
+          'Content-Type': 'application/json',
+          'auth-token-hospital': '$token',
+        },
+      );
+      log('Token: $token');
+      log('Status code: ${response.statusCode}');
+      log('Response body: ${response.body}');
+
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        emit(HospitalSuccess(message: data['msg']));
+        log("otp verified");
+      } else {
+        emit(HospitalFailure(error: data['msg'] ?? 'OTP Verification Failed'));
+        log(data['msg']);
+      }
+    } catch (e) {
+      emit(HospitalFailure(error: 'Unexpected error occurred: $e'));
+      log(e.toString());
+    }
+  }
 
 //   Future<void> _onResendOtp(
 //       ResendHospitalOtp event, Emitter<HospitalAuthState> emit) async {

@@ -271,8 +271,12 @@ class _PatientState extends State<Patient> {
 
               // Trigger navigation after the dialog is shown
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const VerifyOtp()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const VerifyOtp(
+                              userType: 'user',
+                            )));
               });
             }
 
@@ -608,8 +612,10 @@ class _DoctorState extends State<Doctor> {
 
               // Trigger navigation after the dialog is shown
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const VerifyOtp()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const VerifyOtp(userType: 'hospital')));
               });
             }
 

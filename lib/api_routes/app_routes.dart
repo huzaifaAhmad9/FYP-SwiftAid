@@ -18,7 +18,7 @@ class AppRoutes {
 
   static const String hospitalRegister = "$baseUrl/hospital/register";
   static const String hospitalLogin = "$baseUrl/hospital/login";
-  static String hospitalVerify(String otp) => "$baseUrl/hospital/verify/$otp";
+  static String hospitalVerify() => "$baseUrl/hospital/verify";
   static const String hospitalResendOTP = "$baseUrl/hospital/resendOTP";
   static const String hospitalForgotPassword =
       "$baseUrl/hospital/forgot-password";
