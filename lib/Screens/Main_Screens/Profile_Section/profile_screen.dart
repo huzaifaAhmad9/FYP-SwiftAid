@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:swift_aid/Models/hospital_model.dart';
+import 'package:swift_aid/Screens/auth/SignUp/prefereces/user_preferences.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
 import 'package:swift_aid/bloc/user_bloc/file_upload_cubit.dart';
@@ -161,8 +162,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     BlocBuilder<UserBloc, UserState>(
                       builder: (context, state) {
                         if (state is UserLoadedState) {
-                          return Center(
-                            child: Text(
+                          return Column(children: [
+                            Text(
                               state.userModel.name!,
                               style: const TextStyle(
                                 fontSize: 18,
@@ -170,7 +171,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                          );
+                            Text(
+                              state.userModel.email!,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: AppColors.whiteColor,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            // Text(
+                            //   state.userModel.dob! as String,
+                            //   style: const TextStyle(
+                            //     fontSize: 15,
+                            //     color: AppColors.whiteColor,
+                            //     fontWeight: FontWeight.normal,
+                            //   ),
+                            // ),
+                          ]);
                         } else if (state is UserLoadingState) {
                           return const Center(
                             child: CircularProgressIndicator(
@@ -178,18 +195,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               strokeWidth: 2,
                             ),
                           );
-                          // } else {
-                          //   return const Center(
-                          //     child: Text(
-                          //       'Error loading user',
-                          //       style: TextStyle(
-                          //         fontSize: 18,
-                          //         color: AppColors.whiteColor,
-                          //         fontWeight: FontWeight.bold,
-                          //       ),
-                          //     ),
-                          //   );
-                          // }
                         } else if (state is UserErrorState) {
                           return Center(
                             child: Text(
@@ -207,66 +212,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     ),
                     const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            Image.asset('assets/images/heart.png'),
-                            const Text('Heart rate',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: AppColors.textColor,
-                                )),
-                            const Text('215bpm',
-                                style: TextStyle(
-                                    color: AppColors.whiteColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16)),
-                          ],
-                        ),
-                        Container(
-                          color: AppColors.textColor,
-                          height: 44,
-                          width: 1,
-                        ),
-                        Column(
-                          children: [
-                            Image.asset('assets/images/fire.png'),
-                            const Text('Calories',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: AppColors.textColor,
-                                )),
-                            const Text('756cal',
-                                style: TextStyle(
-                                    color: AppColors.whiteColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16)),
-                          ],
-                        ),
-                        Container(
-                          color: AppColors.textColor,
-                          height: 44,
-                          width: 1,
-                        ),
-                        Column(
-                          children: [
-                            Image.asset('assets/images/weight.png'),
-                            const Text('Weight',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: AppColors.textColor,
-                                )),
-                            const Text('103lbs',
-                                style: TextStyle(
-                                    color: AppColors.whiteColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16)),
-                          ],
-                        ),
-                      ],
-                    )
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //   children: [
+                    //     Column(
+                    //       children: [
+                    //         Image.asset('assets/images/heart.png'),
+                    //         const Text('Heart rate',
+                    //             style: TextStyle(
+                    //               fontSize: 10,
+                    //               color: AppColors.textColor,
+                    //             )),
+                    //         const Text('215bpm',
+                    //             style: TextStyle(
+                    //                 color: AppColors.whiteColor,
+                    //                 fontWeight: FontWeight.bold,
+                    //                 fontSize: 16)),
+                    //       ],
+                    //     ),
+                    //     Container(
+                    //       color: AppColors.textColor,
+                    //       height: 44,
+                    //       width: 1,
+                    //     ),
+                    //     Column(
+                    //       children: [
+                    //         Image.asset('assets/images/fire.png'),
+                    //         const Text('Calories',
+                    //             style: TextStyle(
+                    //               fontSize: 10,
+                    //               color: AppColors.textColor,
+                    //             )),
+                    //         const Text('756cal',
+                    //             style: TextStyle(
+                    //                 color: AppColors.whiteColor,
+                    //                 fontWeight: FontWeight.bold,
+                    //                 fontSize: 16)),
+                    //       ],
+                    //     ),
+                    //     Container(
+                    //       color: AppColors.textColor,
+                    //       height: 44,
+                    //       width: 1,
+                    //     ),
+                    //     Column(
+                    //       children: [
+                    //         Image.asset('assets/images/weight.png'),
+                    //         const Text('Weight',
+                    //             style: TextStyle(
+                    //               fontSize: 10,
+                    //               color: AppColors.textColor,
+                    //             )),
+                    //         const Text('103lbs',
+                    //             style: TextStyle(
+                    //                 color: AppColors.whiteColor,
+                    //                 fontWeight: FontWeight.bold,
+                    //                 fontSize: 16)),
+                    //       ],
+                    //     ),
+                    //   ],
+                    // )
                   ],
                 ),
               ],
@@ -291,6 +296,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     const SizedBox(height: 25),
                     CustomListTile(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const UserPreferences()));
+                      },
                       leading: Container(
                         height: 45,
                         width: 45,
