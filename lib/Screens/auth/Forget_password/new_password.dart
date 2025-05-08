@@ -8,6 +8,9 @@ import 'package:swift_aid/Screens/personal_details/component/text_field.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_bloc.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_state.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swift_aid/components/custom_button.dart';
@@ -16,7 +19,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 class PasswordResetScreen extends StatefulWidget {
-  const PasswordResetScreen({super.key});
+  final String userType;
+  const PasswordResetScreen({super.key, required this.userType});
 
   @override
   _PasswordResetScreenState createState() => _PasswordResetScreenState();
@@ -31,7 +35,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   bool _isConfirmPasswordHidden = true;
   bool _showVerifiedIcon = false;
 
-  void customDialogue() {
+  void customDialogueForUser() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -120,6 +124,95 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
     );
   }
 
+  void customDialogueForHospital() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return BlocBuilder<HospitalAuthBloc, HospitalAuthState>(
+          builder: (context, state) {
+            if (state is HospitalLoading) {
+              return _buildDialog(
+                context,
+                content: const Row(
+                  children: [
+                    Spacer(),
+                    SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    Spacer(),
+                  ],
+                ),
+                title: "Loading...",
+              );
+            }
+
+            if (state is HospitalSuccess) {
+              log("Success state triggered");
+
+              _buildDialog(
+                context,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.message,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    2.heightBox,
+                    const Icon(
+                      Icons.check_circle,
+                      color: AppColors.primaryColor,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+                title: "Success",
+              );
+
+              // Trigger navigation after the dialog is shown
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => const Login()));
+              });
+            }
+
+            if (state is HospitalFailure) {
+              return _buildDialog(
+                context,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.error,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    2.heightBox,
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+                title: "Error",
+              );
+            }
+
+            return const SizedBox();
+          },
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -127,8 +220,15 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   }
 
   void reset(String otp, String password) {
-    context.read<AuthBloc>().add(ResetPasswordEvent(otp, password));
-    customDialogue();
+    if (widget.userType == 'user') {
+      context.read<AuthBloc>().add(ResetPasswordEvent(otp, password));
+      customDialogueForUser();
+    } else if (widget.userType == 'hospital') {
+      context
+          .read<HospitalAuthBloc>()
+          .add(ResetHospitalPassword(otp, password));
+      customDialogueForHospital();
+    }
   }
 
   @override

@@ -1,4 +1,3 @@
-import 'package:swift_aid/Screens/auth/SignUp/prefereces/user_preferences.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 import 'package:swift_aid/Screens/Splash_Screen/main_splash.dart';
 import 'package:swift_aid/bloc/user_bloc/file_upload_cubit.dart';
@@ -40,7 +39,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const UserPreferences(),
+      home: const MainSplash(),
     );
   }
 }

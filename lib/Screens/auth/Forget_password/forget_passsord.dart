@@ -108,7 +108,9 @@ class _ForgetPasssordState extends State<ForgetPasssord> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const PasswordResetScreen()));
+                        builder: (_) => const PasswordResetScreen(
+                              userType: 'user',
+                            )));
               });
             }
 
@@ -199,7 +201,9 @@ class _ForgetPasssordState extends State<ForgetPasssord> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const PasswordResetScreen()));
+                        builder: (_) => const PasswordResetScreen(
+                              userType: 'hospital',
+                            )));
               });
             }
 
@@ -241,7 +245,7 @@ class _ForgetPasssordState extends State<ForgetPasssord> {
       customDialogueForUser();
     } else if (widget.userType == 'hospital') {
       context.read<HospitalAuthBloc>().add(ForgotHospitalPassword(email));
-      customDialogueForUser();
+      customDialogueForHospital();
     }
   }
 

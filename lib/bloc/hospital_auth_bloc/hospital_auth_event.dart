@@ -38,7 +38,7 @@ class ResetHospitalPassword extends HospitalAuthEvent {
   final String otp;
   final String newPassword;
 
-  ResetHospitalPassword({required this.otp, required this.newPassword});
+  ResetHospitalPassword(this.otp, this.newPassword);
 }
 
 class LogoutHospital extends HospitalAuthEvent {
