@@ -1,7 +1,7 @@
-import 'package:swift_aid/Screens/auth/components/custom_field.dart';
-import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
+import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/Screens/auth/SignUp/verify_otp.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
@@ -12,6 +12,7 @@ import 'package:swift_aid/Screens/auth/Login/login.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:swift_aid/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' show log;
 
@@ -834,13 +835,10 @@ class _DoctorState extends State<Doctor> {
                     hintText: "Enter your Number",
                     obscureText: false,
                     focusNode: _numberFocus,
-                    prefixIcon: Image.asset(
-                      'assets/images/phone.png',
-                      scale: 0.3,
-                      height: 0,
-                      width: 0,
+                    prefixIcon: Icon(
+                      CupertinoIcons.phone_circle,
                       color: _numberFocus.hasFocus
-                          ? const Color.fromARGB(255, 18, 109, 100)
+                          ? AppColors.primaryColor
                           : Colors.grey,
                     ),
                     validator: (value) {
