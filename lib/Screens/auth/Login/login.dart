@@ -390,7 +390,9 @@ class _PatientState extends State<Patient> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const ForgetPasssord()));
+                                builder: (_) => const ForgetPasssord(
+                                      userType: 'user',
+                                    )));
                       },
                       child: const Text(
                         'Forgot Password?',
@@ -745,7 +747,9 @@ class _HospitalState extends State<Hospital> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const ForgetPasssord()));
+                                builder: (_) => const ForgetPasssord(
+                                      userType: 'hospital',
+                                    )));
                       },
                       child: const Text(
                         'Forgot Password?',

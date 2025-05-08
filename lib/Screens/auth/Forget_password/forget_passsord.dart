@@ -1,3 +1,6 @@
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 import 'package:swift_aid/Screens/auth/Forget_password/new_password.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
@@ -12,7 +15,8 @@ import 'package:flutter/material.dart';
 import 'dart:developer' show log;
 
 class ForgetPasssord extends StatefulWidget {
-  const ForgetPasssord({super.key});
+  final String userType;
+  const ForgetPasssord({super.key, required this.userType});
 
   @override
   State<ForgetPasssord> createState() => _ForgetPasssordState();
@@ -48,7 +52,7 @@ class _ForgetPasssordState extends State<ForgetPasssord> {
     super.dispose();
   }
 
-  void customDialogue() {
+  void customDialogueForUser() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -139,9 +143,106 @@ class _ForgetPasssordState extends State<ForgetPasssord> {
     );
   }
 
-  void sendResetPasssword(String email) {
-    context.read<AuthBloc>().add(ForgetPasswordEvent(email: email));
-    customDialogue();
+  void customDialogueForHospital() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return BlocBuilder<HospitalAuthBloc, HospitalAuthState>(
+          builder: (context, state) {
+            if (state is HospitalLoading) {
+              return _buildDialog(
+                context,
+                content: const Row(
+                  children: [
+                    Spacer(),
+                    SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    Spacer(),
+                  ],
+                ),
+                title: "Loading...",
+              );
+            }
+
+            if (state is HospitalSuccess) {
+              log("Success state triggered");
+
+              _buildDialog(
+                context,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.message,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    2.heightBox,
+                    const Icon(
+                      Icons.check_circle,
+                      color: AppColors.primaryColor,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+                title: "Success",
+              );
+
+              // Trigger navigation after the dialog is shown
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const PasswordResetScreen()));
+              });
+            }
+
+            if (state is HospitalFailure) {
+              return _buildDialog(
+                context,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.error,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    2.heightBox,
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+                title: "Error",
+              );
+            }
+
+            return const SizedBox();
+          },
+        );
+      },
+    );
+  }
+
+  void sendResetPasssword(String email) async {
+    if (widget.userType == 'user') {
+      context.read<AuthBloc>().add(ForgetPasswordEvent(email: email));
+
+      customDialogueForUser();
+    } else if (widget.userType == 'hospital') {
+      context.read<HospitalAuthBloc>().add(ForgotHospitalPassword(email));
+      customDialogueForUser();
+    }
   }
 
   @override

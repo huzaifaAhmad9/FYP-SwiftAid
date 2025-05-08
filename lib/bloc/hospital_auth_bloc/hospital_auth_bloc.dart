@@ -12,8 +12,8 @@ class HospitalAuthBloc extends Bloc<HospitalAuthEvent, HospitalAuthState> {
     on<RegisterHospital>(_onRegister);
     on<LoginHospital>(_onLogin);
     on<VerifyHospitalEmail>(_onVerifyEmail);
-    // on<ResendHospitalOtp>(_onResendOtp);
-    // on<ForgotHospitalPassword>(_onForgotPassword);
+    //on<ResendHospitalOtp>(_onResendOtp);
+    on<ForgotHospitalPassword>(_onForgotPassword);
     // on<ResetHospitalPassword>(_onResetPassword);
     on<LogoutHospital>(_onLogOut);
   }
@@ -125,15 +125,48 @@ class HospitalAuthBloc extends Bloc<HospitalAuthEvent, HospitalAuthState> {
 //     }
 //   }
 
-//   Future<void> _onForgotPassword(
-//       ForgotHospitalPassword event, Emitter<HospitalAuthState> emit) async {
-//     emit(HospitalLoading());
-//     try {
-//       emit(HospitalSuccess('OTP sent for password reset'));
-//     } catch (e) {
-//       emit(HospitalFailure(e.toString()));
-//     }
-//   }
+  Future<void> _onForgotPassword(
+      ForgotHospitalPassword event, Emitter<HospitalAuthState> emit) async {
+    emit(HospitalLoading());
+    log('Forgot password started for email: ${event.email.trim()}');
+
+    try {
+      final response = await http.post(
+        Uri.parse(AppRoutes.hospitalForgotPassword),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'Email': event.email.trim()}),
+      );
+
+      log('Response status: ${response.statusCode}');
+      log('Response body: ${response.body}');
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        final message = responseData['msg'];
+        final newAuthToken = responseData['token'];
+
+        log('Password reset successful: $message');
+        log('New token: $newAuthToken');
+
+        final prefs = await SharedPreferences.getInstance();
+
+        await prefs.remove('auth-token-hospital');
+        await prefs.setString('auth-token-hospital', newAuthToken);
+
+        emit(HospitalSuccess(message: message));
+      } else {
+        log('Password reset failed: ${responseData['msg']}');
+        emit(HospitalFailure(
+          error: responseData['msg'] ?? 'Something went wrong',
+        ));
+      }
+    } catch (e, stackTrace) {
+      log('Exception during forgot password: $e');
+      log('Exception', error: e, stackTrace: stackTrace);
+      emit(HospitalFailure(error: 'Unexpected error occurred: $e'));
+    }
+  }
 
 //   Future<void> _onResetPassword(
 //       ResetHospitalPassword event, Emitter<HospitalAuthState> emit) async {
