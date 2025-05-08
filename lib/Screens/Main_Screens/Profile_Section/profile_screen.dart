@@ -1,23 +1,25 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:developer' show log;
-
+import 'package:swift_aid/Models/hospital_model.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
+import 'package:swift_aid/bloc/user_bloc/file_upload_cubit.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swift_aid/Models/user_model.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
-import 'package:swift_aid/bloc/user_bloc/file_upload_cubit.dart';
-import 'package:swift_aid/bloc/user_bloc/user_bloc.dart';
+import 'package:swift_aid/components/custom_listtile.dart';
 import 'package:swift_aid/bloc/user_bloc/user_event.dart';
 import 'package:swift_aid/bloc/user_bloc/user_state.dart';
-import 'package:swift_aid/components/custom_listtile.dart';
 import 'package:swift_aid/Screens/auth/Login/login.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_bloc.dart';
+import 'package:swift_aid/bloc/user_bloc/user_bloc.dart';
 import 'package:swift_aid/components/custom_dialog.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
+import 'package:swift_aid/Models/user_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' show log;
 import 'dart:io' show File;
 
 class ProfileScreen extends StatefulWidget {
@@ -31,21 +33,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isSwitched = false;
   File? profileImage;
   UserModel? user;
+  HospitalModel? hospital;
   bool isLoading = true;
+  String? token;
+  String? isLoggedIn;
   @override
   void initState() {
     super.initState();
+
     retrieveUserData();
   }
 
   Future<void> retrieveUserData() async {
+    await _checkLoggedInUser();
+    log('isLoggedIn: $isLoggedIn');
+
     _loadProfileImage();
-    context.read<UserBloc>().add(FetchUserEvent());
+    if (mounted) {
+      if (isLoggedIn == 'user') {
+        context.read<UserBloc>().add(FetchUserEvent());
+      } else if (isLoggedIn == 'hospital') {
+        //context.read<HospitalAuthBloc>().add(FetchHospitalEvent());
+      }
+      context.read<UserBloc>().add(FetchUserEvent());
+    }
+  }
+
+  Future<void> _checkLoggedInUser() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    if (prefs.containsKey('auth_token')) {
+      token = prefs.getString('auth_token');
+
+      isLoggedIn = 'user';
+      log('User token: $token');
+    }
+
+    token = prefs.getString('hospital_auth_token');
+    if (token != null) {
+      isLoggedIn = 'hospital';
+      log('Hospital token: $token');
+    }
+
+    // If no token found, log a message or set a default state
+    if (isLoggedIn == null) {
+      log('No token found, user not logged in');
+    }
   }
 
   Future<void> _loadProfileImage() async {
     final prefs = await SharedPreferences.getInstance();
-    final imagePath = prefs.getString('profileImagePath');
+    final imagePath = prefs.getString('profileImagePath_$token');
     if (imagePath != null) {
       setState(() {
         profileImage = File(imagePath);
@@ -323,7 +361,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     CustomListTile(
                       onTap: () {
-                        showCustomDialog(context);
+                        log("isloggedIn: $isLoggedIn");
+
+                        showCustomDialog(context, isLoggedIn!);
                       },
                       leading: Container(
                         height: 45,
@@ -401,7 +441,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (pickedFile != null) {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('profileImagePath', pickedFile.path);
+      await prefs.setString('profileImagePath_$token', pickedFile.path);
       setState(() {
         profileImage = File(pickedFile.path);
       });
@@ -409,8 +449,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         log('Picked file path: ${pickedFile.path}');
 
         log(" before file uploaded trigger");
-        context.read<FileUploadCubit>().uploadFile(pickedFile.path);
-        log(" afer file uploaded trigger");
+        if (isLoggedIn == 'user') {
+          context.read<FileUploadCubit>().uploadFile(pickedFile.path);
+          log(" afer file uploaded trigger");
+        } else {
+          return;
+        }
       }
     }
     if (mounted) {
@@ -420,7 +464,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 }
 
 //! LogOut Dailogs
-void showCustomDialog(BuildContext context) {
+void showCustomDialog(BuildContext context, String user) {
   showDialog(
     context: context,
     builder: (context) {
@@ -434,7 +478,9 @@ void showCustomDialog(BuildContext context) {
         ),
         title: 'Are you sure you want to log out?',
         onConfirm: () {
-          context.read<AuthBloc>().add(LogoutEvent());
+          user == 'user'
+              ? context.read<AuthBloc>().add(LogoutEvent())
+              : context.read<HospitalAuthBloc>().add(LogoutHospital());
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (_) => const Login()),

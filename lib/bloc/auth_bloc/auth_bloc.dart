@@ -140,7 +140,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
           await prefs.remove('auth_token');
 
-          
           await prefs.setString('auth_token', newAuthToken);
 
           emit(AuthSucessState(message: message));
@@ -232,8 +231,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
   }
 
-  Future<bool> isUserLoggedIn() async {
+  Future<String?> isUserLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.containsKey('auth_token');
+    if (prefs.containsKey('auth_token')) {
+      return ('user');
+    }
+    return null;
   }
 }

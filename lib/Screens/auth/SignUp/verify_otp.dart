@@ -1,4 +1,4 @@
-import 'package:swift_aid/Screens/doctor_screens/doctor_home_screen.dart';
+import 'package:swift_aid/Screens/doctor_screens/doctor_main_home.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
@@ -237,9 +237,10 @@ class _VerifyOtpState extends State<VerifyOtp> {
               );
 
               WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pop();
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (_) => const DoctorHomeScreen()),
+                  MaterialPageRoute(builder: (_) => const DoctorMainHome()),
                   (Route<dynamic> route) => false,
                 );
               });

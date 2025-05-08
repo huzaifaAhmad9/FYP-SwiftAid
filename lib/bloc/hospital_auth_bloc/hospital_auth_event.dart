@@ -40,3 +40,7 @@ class ResetHospitalPassword extends HospitalAuthEvent {
 
   ResetHospitalPassword({required this.otp, required this.newPassword});
 }
+
+class LogoutHospital extends HospitalAuthEvent {
+  LogoutHospital();
+}

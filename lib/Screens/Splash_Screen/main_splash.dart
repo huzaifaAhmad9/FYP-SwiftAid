@@ -1,8 +1,10 @@
 import 'package:swift_aid/Screens/Splash_Screen/On_Boarding/on_boarding_main.dart';
 import 'package:swift_aid/Screens/Main_Screens/main_home.dart';
+import 'package:swift_aid/Screens/doctor_screens/doctor_main_home.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_bloc.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 
 class MainSplash extends StatefulWidget {
   const MainSplash({super.key});
@@ -12,7 +14,7 @@ class MainSplash extends StatefulWidget {
 }
 
 class _MainSplashState extends State<MainSplash> {
-  bool isLoggedIn = false;
+  String? isLoggedIn;
 
   @override
   void initState() {
@@ -22,14 +24,32 @@ class _MainSplashState extends State<MainSplash> {
 
   Future<void> _checkLoginStatus() async {
     final authBloc = AuthBloc();
-    isLoggedIn = await authBloc.isUserLoggedIn();
+    final hospitalBloc = HospitalAuthBloc();
+
+    final userLogin = await authBloc.isUserLoggedIn();
+    final hospitalLogin = await hospitalBloc.isUserLoggedIn();
+
+    if (userLogin != null) {
+      isLoggedIn = userLogin;
+    } else if (hospitalLogin != null) {
+      isLoggedIn = hospitalLogin;
+    } else {
+      isLoggedIn = null;
+    }
 
     Future.delayed(const Duration(seconds: 3), () {
-      if (isLoggedIn) {
+      if (isLoggedIn == 'user') {
         if (mounted) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const MainHome()),
+          );
+        }
+      } else if (isLoggedIn == 'hospital') {
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const DoctorMainHome()),
           );
         }
       } else {

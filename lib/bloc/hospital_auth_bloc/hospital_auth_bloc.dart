@@ -10,11 +10,12 @@ import 'dart:convert';
 class HospitalAuthBloc extends Bloc<HospitalAuthEvent, HospitalAuthState> {
   HospitalAuthBloc() : super(HospitalInitial()) {
     on<RegisterHospital>(_onRegister);
-    // on<LoginHospital>(_onLogin);
+    on<LoginHospital>(_onLogin);
     on<VerifyHospitalEmail>(_onVerifyEmail);
     // on<ResendHospitalOtp>(_onResendOtp);
     // on<ForgotHospitalPassword>(_onForgotPassword);
     // on<ResetHospitalPassword>(_onResetPassword);
+    on<LogoutHospital>(_onLogOut);
   }
 
   Future<void> _onRegister(
@@ -52,15 +53,35 @@ class HospitalAuthBloc extends Bloc<HospitalAuthEvent, HospitalAuthState> {
     }
   }
 
-//   Future<void> _onLogin(
-//       LoginHospital event, Emitter<HospitalAuthState> emit) async {
-//     emit(HospitalLoading());
-//     try {
-//       emit(HospitalSuccess('Login successful'));
-//     } catch (e) {
-//       emit(HospitalFailure(e.toString()));
-//     }
-//   }
+  Future<void> _onLogin(
+      LoginHospital event, Emitter<HospitalAuthState> emit) async {
+    emit(HospitalLoading());
+    try {
+      final response = await http.post(
+        Uri.parse(AppRoutes.hospitalLogin),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'Email': event.email,
+          'Password': event.password,
+        }),
+      );
+      log('Status code: ${response.statusCode}');
+      log('Response body: ${response.body}');
+      final data = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('hospital_auth_token', data['token']);
+
+        emit(HospitalSuccess(message: data['msg'] ?? 'Login successful'));
+      } else {
+        emit(HospitalFailure(error: data['msg'] ?? 'Login failed'));
+      }
+    } catch (e) {
+      log("Unexpected error: $e");
+      emit(HospitalFailure(error: 'Unexpected error: $e'));
+    }
+  }
 
   Future<void> _onVerifyEmail(
       VerifyHospitalEmail event, Emitter<HospitalAuthState> emit) async {
@@ -124,4 +145,22 @@ class HospitalAuthBloc extends Bloc<HospitalAuthEvent, HospitalAuthState> {
 //     }
 //   }
 //
+  _onLogOut(LogoutHospital event, Emitter<HospitalAuthState> emit) async {
+    emit(HospitalLoading());
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('hospital_auth_token');
+      emit(HospitalInitial());
+    } catch (e) {
+      emit(HospitalFailure(error: 'Logout failed: $e'));
+    }
+  }
+
+  Future<String?> isUserLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('hospital_auth_token')) {
+      return ('hospital');
+    }
+    return null;
+  }
 }

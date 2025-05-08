@@ -1,6 +1,9 @@
 import 'package:swift_aid/Screens/auth/Forget_password/forget_passsord.dart';
 import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/Screens/doctor_screens/doctor_main_home.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/Screens/Main_Screens/main_home.dart';
 import 'package:swift_aid/components/circle_container.dart';
@@ -559,9 +562,9 @@ class _HospitalState extends State<Hospital> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return BlocBuilder<AuthBloc, AuthState>(
+        return BlocBuilder<HospitalAuthBloc, HospitalAuthState>(
           builder: (context, state) {
-            if (state is AuthloadingState) {
+            if (state is HospitalLoading) {
               return _buildDialog(
                 context,
                 content: const Row(
@@ -581,7 +584,7 @@ class _HospitalState extends State<Hospital> {
               );
             }
 
-            if (state is AuthSucessState) {
+            if (state is HospitalSuccess) {
               log("Success state triggered");
 
               _buildDialog(
@@ -608,18 +611,18 @@ class _HospitalState extends State<Hospital> {
 
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const MainHome()));
+                    MaterialPageRoute(builder: (_) => const DoctorMainHome()));
               });
             }
 
-            if (state is AuthErrorState) {
+            if (state is HospitalFailure) {
               return _buildDialog(
                 context,
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      state.message,
+                      state.error,
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
@@ -647,7 +650,9 @@ class _HospitalState extends State<Hospital> {
     final email = _email.text.trim();
     final password = _password.text.trim();
 
-    context.read<AuthBloc>().add(LoginEvent(email: email, password: password));
+    context
+        .read<HospitalAuthBloc>()
+        .add(LoginHospital(email: email, password: password));
     customDialogue();
   }
 
@@ -760,15 +765,9 @@ class _HospitalState extends State<Hospital> {
                   text: 'Login',
                   backgroundColor: AppColors.primaryColor,
                   onPressed: () {
-                    // if (_formKey.currentState!.validate()) {
-                    //login();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DoctorMainHome(),
-                      ),
-                    );
-                    // }
+                    if (_formKey.currentState!.validate()) {
+                      login();
+                    }
                   },
                 ),
                 const SizedBox(height: 10),
