@@ -41,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-
+    _loadProfileImage();
     retrieveUserData();
   }
 
@@ -49,14 +49,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await _checkLoggedInUser();
     log('isLoggedIn: $isLoggedIn');
 
-    _loadProfileImage();
     if (mounted) {
       if (isLoggedIn == 'user') {
         context.read<UserBloc>().add(FetchUserEvent());
       } else if (isLoggedIn == 'hospital') {
         //context.read<HospitalAuthBloc>().add(FetchHospitalEvent());
       }
-      context.read<UserBloc>().add(FetchUserEvent());
     }
   }
 

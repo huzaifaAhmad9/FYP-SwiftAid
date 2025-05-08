@@ -1,13 +1,20 @@
+import 'dart:developer' show log;
+
 import 'package:dropdown_button2/dropdown_button2.dart'
     show DropdownButtonFormField2, DropdownStyleData;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swift_aid/Screens/personal_details/component/blood_group.dart';
 import 'package:swift_aid/Screens/personal_details/component/text_field.dart';
 import 'package:swift_aid/Screens/personal_details/component/gender.dart';
 import 'package:swift_aid/Screens/personal_details/component/height.dart';
 import 'package:swift_aid/Screens/personal_details/component/weight.dart';
 import 'package:swift_aid/Screens/personal_details/component/age.dart';
+import 'package:swift_aid/bloc/user_bloc/user_bloc.dart';
+import 'package:swift_aid/bloc/user_bloc/user_event.dart';
+import 'package:swift_aid/bloc/user_bloc/user_state.dart';
 import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +37,144 @@ class _UserPreferencesState extends State<UserPreferences> {
   String? _selectedHealthState;
   bool _isVerified = false;
   int? _age;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedData();
+  }
+
+  Future<void> _loadSavedData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      phoneController.text = prefs.getString('phone') ?? '';
+      dobController.text = prefs.getString('dob') ?? '';
+      addressController.text = prefs.getString('address') ?? '';
+      genderController.text = prefs.getString('gender') ?? '';
+      bloodGroupController.text = prefs.getString('bloodGroup') ?? '';
+      heightController.text = prefs.getString('height') ?? '';
+      weightController.text = prefs.getString('weight') ?? '';
+      _selectedHealthState = prefs.getString('healthState');
+      _isVerified = prefs.getBool('isVerified') ?? false;
+    });
+  }
+
+  Future<void> update() async {
+    log("Update function called");
+
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('phone', phoneController.text);
+    await prefs.setString('dob', dobController.text);
+    await prefs.setString('address', addressController.text);
+    await prefs.setString('gender', genderController.text);
+    await prefs.setString('bloodGroup', bloodGroupController.text);
+    await prefs.setString('height', heightController.text);
+    await prefs.setString('weight', weightController.text);
+    await prefs.setString('healthState', _selectedHealthState ?? '');
+    await prefs.setBool('isVerified', _isVerified);
+
+    // Trigger the event to update backend
+    final userData = {
+      'Phone': phoneController.text,
+      'DOB': dobController.text,
+      'Address': addressController.text,
+      'Gender': genderController.text,
+      'HealthState': _selectedHealthState,
+      'IsVerified': _isVerified
+    };
+    if (mounted) {
+      context.read<UserBloc>().add(UpdateUserEvent(updatedData: userData));
+    }
+
+    customDialogue();
+  }
+
+  void customDialogue() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return BlocBuilder<UserBloc, UserState>(
+          builder: (context, state) {
+            if (state is UserLoadingState) {
+              return _buildDialog(
+                context,
+                content: const Row(
+                  children: [
+                    Spacer(),
+                    SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    Spacer(),
+                  ],
+                ),
+                title: "Loading...",
+              );
+            }
+
+            if (state is UserLoadedState) {
+              log("Success state triggered");
+
+              return _buildDialog(
+                context,
+                content: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      color: Colors.green,
+                      size: 60.0,
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      "User Updated",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                title: "Success",
+              );
+            }
+
+            if (state is UserErrorState) {
+              return _buildDialog(
+                context,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50.0,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      state.message,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                title: "Error",
+              );
+            }
+
+            return const SizedBox();
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -351,8 +496,9 @@ class _UserPreferencesState extends State<UserPreferences> {
                   borderRadius: 20.0,
                   text: 'Update Profile',
                   onPressed: () {
+                    log("update function on tap");
                     if (_formKey.currentState?.validate() ?? false) {
-                      //! logic here --->
+                      update();
                     }
                   },
                   backgroundColor: AppColors.primaryColor,
@@ -388,4 +534,12 @@ class _UserPreferencesState extends State<UserPreferences> {
     }
     return age;
   }
+}
+
+Widget _buildDialog(BuildContext context,
+    {required Widget content, required String title}) {
+  return AlertDialog(
+    title: Text(title),
+    content: content,
+  );
 }

@@ -37,11 +37,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UpdateUserEvent>((event, emit) async {
       emit(UserLoadingState());
       try {
+        log("Updating user data: ${event.updatedData}");
         final prefs = await SharedPreferences.getInstance();
         final token = prefs.getString('auth_token');
         final response = await http.put(Uri.parse(AppRoutes.userProfile),
             headers: {'auth-token-user': '$token'},
             body: json.encode(event.updatedData));
+
+        log('Status code: ${response.statusCode}');
+        log('Response body: ${response.body}');
 
         if (response.statusCode == 200) {
           final jsonData = json.decode(response.body);
