@@ -1,9 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:swift_aid/Models/hospital_model.dart';
 import 'package:swift_aid/Screens/auth/SignUp/prefereces/user_preferences.dart';
-import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 import 'package:swift_aid/bloc/user_bloc/file_upload_cubit.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +14,7 @@ import 'package:swift_aid/Screens/auth/Login/login.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_bloc.dart';
 import 'package:swift_aid/bloc/user_bloc/user_bloc.dart';
 import 'package:swift_aid/components/custom_dialog.dart';
+import 'package:swift_aid/Models/hospital_model.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:swift_aid/Models/user_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,9 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (mounted) {
       if (isLoggedIn == 'user') {
         context.read<UserBloc>().add(FetchUserEvent());
-      } else if (isLoggedIn == 'hospital') {
-        //context.read<HospitalAuthBloc>().add(FetchHospitalEvent());
-      }
+      } else if (isLoggedIn == 'hospital') {}
     }
   }
 
@@ -115,8 +113,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         BlocBuilder<UserBloc, UserState>(
                           builder: (BuildContext context, UserState state) {
                             return Container(
-                              width: 90,
-                              height: 90,
+                              width: 130,
+                              height: 130,
                               decoration: BoxDecoration(
                                 color: AppColors.whiteColor,
                                 shape: BoxShape.circle,
@@ -133,13 +131,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           },
                         ),
                         Positioned(
-                          right: 3,
-                          bottom: 1,
+                          right: 7,
+                          bottom: 7,
                           child: GestureDetector(
                             onTap: _showImagePickerSheet,
                             child: Container(
-                              width: 20,
-                              height: 20,
+                              width: 25,
+                              height: 25,
                               decoration: const BoxDecoration(
                                 color: AppColors.whiteColor,
                                 shape: BoxShape.circle,
@@ -148,7 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 child: Icon(
                                   Icons.camera_alt_outlined,
                                   color: AppColors.primaryColor,
-                                  size: 13,
+                                  size: 15,
                                 ),
                               ),
                             ),
@@ -160,32 +158,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     BlocBuilder<UserBloc, UserState>(
                       builder: (context, state) {
                         if (state is UserLoadedState) {
-                          return Column(children: [
-                            Text(
-                              state.userModel.name!,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                color: AppColors.whiteColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              state.userModel.email!,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                color: AppColors.whiteColor,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                            // Text(
-                            //   state.userModel.dob! as String,
-                            //   style: const TextStyle(
-                            //     fontSize: 15,
-                            //     color: AppColors.whiteColor,
-                            //     fontWeight: FontWeight.normal,
-                            //   ),
-                            // ),
-                          ]);
+                          return Center(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    state.userModel.name!,
+                                    style: const TextStyle(
+                                      fontSize: 22,
+                                      color: AppColors.whiteColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    state.userModel.email!,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: AppColors.whiteColor,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                ]),
+                          );
                         } else if (state is UserLoadingState) {
                           return const Center(
                             child: CircularProgressIndicator(
@@ -209,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         }
                       },
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 20),
                     // Row(
                     //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     //   children: [
