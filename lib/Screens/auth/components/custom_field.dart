@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomField extends StatelessWidget {
   final TextEditingController controller;
@@ -11,7 +12,7 @@ class CustomField extends StatelessWidget {
   final Color borderColor;
   final Color fillColor;
   final double borderRadius;
-
+  final List<TextInputFormatter>? inputFormatters; 
   const CustomField({
     super.key,
     required this.controller,
@@ -24,6 +25,7 @@ class CustomField extends StatelessWidget {
     this.borderColor = Colors.grey,
     this.fillColor = Colors.grey,
     this.borderRadius = 30.0,
+    this.inputFormatters, 
   });
 
   @override
@@ -31,7 +33,8 @@ class CustomField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       focusNode: focusNode,
-      obscureText: obscureText, // Dynamically reflect the state
+      obscureText: obscureText,
+      inputFormatters: inputFormatters, 
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(fontSize: 12, color: Colors.grey),

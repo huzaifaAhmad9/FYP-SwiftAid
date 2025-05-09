@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart'
+    show FilteringTextInputFormatter, LengthLimitingTextInputFormatter;
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
@@ -841,12 +843,17 @@ class _DoctorState extends State<Doctor> {
                           ? AppColors.primaryColor
                           : Colors.grey,
                     ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(11),
+                    ],
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Number is required";
-                      } else {
-                        return null;
+                      } else if (value.length != 11) {
+                        return "Number must be 11 digits";
                       }
+                      return null;
                     },
                   ),
                   const SizedBox(
