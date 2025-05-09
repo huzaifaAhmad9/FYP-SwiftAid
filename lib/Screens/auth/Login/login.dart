@@ -1,9 +1,9 @@
 import 'package:swift_aid/Screens/auth/Forget_password/forget_passsord.dart';
-import 'package:swift_aid/Screens/auth/components/custom_field.dart';
-import 'package:swift_aid/Screens/doctor_screens/doctor_main_home.dart';
-import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
+import 'package:swift_aid/Screens/hospital/hospital_dashboard.dart';
+import 'package:swift_aid/Screens/auth/components/custom_field.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/Screens/Main_Screens/main_home.dart';
 import 'package:swift_aid/components/circle_container.dart';
@@ -612,8 +612,10 @@ class _HospitalState extends State<Hospital> {
               );
 
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const DoctorMainHome()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const HospitalDashboard()));
               });
             }
 

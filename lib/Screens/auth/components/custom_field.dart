@@ -12,7 +12,9 @@ class CustomField extends StatelessWidget {
   final Color borderColor;
   final Color fillColor;
   final double borderRadius;
-  final List<TextInputFormatter>? inputFormatters; 
+  final List<TextInputFormatter>? inputFormatters;
+  final TextInputType keyboardType; 
+
   const CustomField({
     super.key,
     required this.controller,
@@ -25,7 +27,8 @@ class CustomField extends StatelessWidget {
     this.borderColor = Colors.grey,
     this.fillColor = Colors.grey,
     this.borderRadius = 30.0,
-    this.inputFormatters, 
+    this.inputFormatters,
+    this.keyboardType = TextInputType.text, 
   });
 
   @override
@@ -34,7 +37,8 @@ class CustomField extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       obscureText: obscureText,
-      inputFormatters: inputFormatters, 
+      inputFormatters: inputFormatters,
+      keyboardType: keyboardType, 
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(fontSize: 12, color: Colors.grey),

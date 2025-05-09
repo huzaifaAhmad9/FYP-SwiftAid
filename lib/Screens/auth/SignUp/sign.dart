@@ -833,6 +833,7 @@ class _DoctorState extends State<Doctor> {
                     height: 20,
                   ),
                   CustomField(
+                    keyboardType: TextInputType.number,
                     controller: _number,
                     hintText: "Enter Number",
                     obscureText: false,

@@ -1,17 +1,17 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:swift_aid/Screens/doctor_screens/doctor_main_home.dart';
 import 'package:swift_aid/Screens/personal_details/component/text_field.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' show LatLng;
-import 'package:swift_aid/Screens/hospital/select_from_map.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' show LatLng;
+import 'package:swift_aid/Screens/hospital/hospital_dashboard.dart';
+import 'package:swift_aid/Screens/hospital/select_from_map.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer';
@@ -122,8 +122,12 @@ class _RegistrationTwoState extends State<RegistrationTwo> {
 
               // Trigger navigation after the dialog is shown
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const DoctorMainHome()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const HospitalDashboard()));
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (_) => const DoctorMainHome()));
               });
             }
 
