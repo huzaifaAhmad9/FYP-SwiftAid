@@ -17,6 +17,7 @@ class AppRoutes {
   static const String userResetPassword = "$baseUrl/user/reset-password";
 
   static const String hospitalRegister = "$baseUrl/hospital/register";
+  static const String hospitalRegister2 = "$baseUrl/hospital/locate-detail";
   static const String hospitalLogin = "$baseUrl/hospital/login";
   static String hospitalVerify() => "$baseUrl/hospital/verify";
   static const String hospitalResendOTP = "$baseUrl/hospital/resendOTP";

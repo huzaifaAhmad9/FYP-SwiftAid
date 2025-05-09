@@ -899,7 +899,7 @@ class _DoctorState extends State<Doctor> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
-                                'Privacy  Policy',
+                                'Privacy Policy',
                                 style: TextStyle(
                                   fontSize: 11,
                                   color: Color.fromARGB(255, 18, 109, 100),

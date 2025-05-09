@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Required for input formatters
+import 'package:flutter/services.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final String? hintText;
@@ -22,6 +22,7 @@ class CustomTextFormField extends StatelessWidget {
   final FocusNode? focusNode;
   final bool obscureText;
   final List<TextInputFormatter>? inputFormatters;
+  final ValueChanged<String>? onChanged;
 
   const CustomTextFormField({
     super.key,
@@ -45,6 +46,7 @@ class CustomTextFormField extends StatelessWidget {
     this.obscureText = false,
     this.focusNode,
     this.inputFormatters,
+    this.onChanged,
   });
 
   @override
@@ -61,6 +63,7 @@ class CustomTextFormField extends StatelessWidget {
       focusNode: focusNode,
       obscureText: obscureText,
       inputFormatters: inputFormatters,
+      onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: hintStyle,

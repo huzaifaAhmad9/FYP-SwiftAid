@@ -1,7 +1,7 @@
-import 'package:swift_aid/Screens/doctor_screens/doctor_main_home.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
+import 'package:swift_aid/Screens/hospital/registration_two.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/Screens/Main_Screens/main_home.dart';
 import 'package:swift_aid/bloc/auth_bloc/auth_evetns.dart';
@@ -240,9 +240,14 @@ class _VerifyOtpState extends State<VerifyOtp> {
                 Navigator.of(context).pop();
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (_) => const DoctorMainHome()),
+                  MaterialPageRoute(builder: (_) => const RegistrationTwo()),
                   (Route<dynamic> route) => false,
                 );
+                // Navigator.pushAndRemoveUntil(
+                //   context,
+                //   MaterialPageRoute(builder: (_) => const DoctorMainHome()),
+                //   (Route<dynamic> route) => false,
+                // );
               });
             }
 
