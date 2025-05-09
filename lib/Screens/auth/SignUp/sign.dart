@@ -86,7 +86,7 @@ class _SignState extends State<Sign> {
                               vertical: 8, horizontal: 20),
                           child: Center(
                             child: Text(
-                              'Patient',
+                              'User',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: isServicesSelected
@@ -116,7 +116,7 @@ class _SignState extends State<Sign> {
                               vertical: 8, horizontal: 20),
                           child: Center(
                             child: Text(
-                              'Doctor',
+                              'Hospital',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: !isServicesSelected
@@ -538,7 +538,7 @@ class _PatientState extends State<Patient> {
   }
 }
 
-//! Doctor
+//! Hospital
 class Doctor extends StatefulWidget {
   const Doctor({super.key});
 
@@ -734,7 +734,7 @@ class _DoctorState extends State<Doctor> {
                   ),
                   CustomField(
                     controller: _name,
-                    hintText: "Enter your name",
+                    hintText: "Enter name",
                     obscureText: false,
                     focusNode: _nameFocus,
                     prefixIcon: Image.asset(
@@ -758,7 +758,7 @@ class _DoctorState extends State<Doctor> {
                   ),
                   CustomField(
                     controller: _email,
-                    hintText: 'Enter your email',
+                    hintText: 'Enter email',
                     focusNode: _emailFocus,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -795,7 +795,7 @@ class _DoctorState extends State<Doctor> {
                   ),
                   CustomField(
                     controller: _password,
-                    hintText: "Enter your password",
+                    hintText: "Enter password",
                     obscureText: _obscurePassword,
                     focusNode: _passwordFocus,
                     prefixIcon: Padding(
@@ -832,7 +832,7 @@ class _DoctorState extends State<Doctor> {
                   ),
                   CustomField(
                     controller: _number,
-                    hintText: "Enter your Number",
+                    hintText: "Enter Number",
                     obscureText: false,
                     focusNode: _numberFocus,
                     prefixIcon: Icon(

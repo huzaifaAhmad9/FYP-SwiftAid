@@ -88,7 +88,7 @@ class _LoginState extends State<Login> {
                               vertical: 8, horizontal: 20),
                           child: Center(
                             child: Text(
-                              'Patient',
+                              'User',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: isServicesSelected
@@ -118,7 +118,7 @@ class _LoginState extends State<Login> {
                               vertical: 8, horizontal: 20),
                           child: Center(
                             child: Text(
-                              'Doctor',
+                              'Hospital',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: !isServicesSelected
