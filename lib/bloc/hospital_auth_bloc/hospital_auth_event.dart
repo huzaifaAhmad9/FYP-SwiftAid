@@ -44,3 +44,8 @@ class ResetHospitalPassword extends HospitalAuthEvent {
 class LogoutHospital extends HospitalAuthEvent {
   LogoutHospital();
 }
+
+class RegisterHospital2 extends HospitalAuthEvent {
+  final Map<String, dynamic> data;
+  RegisterHospital2(this.data);
+}

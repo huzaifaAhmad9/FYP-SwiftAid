@@ -12,7 +12,7 @@ class HospitalAuthBloc extends Bloc<HospitalAuthEvent, HospitalAuthState> {
     on<RegisterHospital>(_onRegister);
     on<LoginHospital>(_onLogin);
     on<VerifyHospitalEmail>(_onVerifyEmail);
-    //on<ResendHospitalOtp>(_onResendOtp);
+    on<RegisterHospital2>(_onRegister2);
     on<ForgotHospitalPassword>(_onForgotPassword);
     on<ResetHospitalPassword>(_onResetPassword);
     on<LogoutHospital>(_onLogOut);
@@ -115,6 +115,37 @@ class HospitalAuthBloc extends Bloc<HospitalAuthEvent, HospitalAuthState> {
     }
   }
 
+  Future<void> _onRegister2(
+      RegisterHospital2 event, Emitter<HospitalAuthState> emit) async {
+    emit(HospitalLoading());
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('hospital_auth_token');
+      log('Token: $token');
+      final response = await http.post(
+        Uri.parse(AppRoutes.hospitalRegister2),
+        headers: {
+          'Content-Type': 'application/json',
+          'auth-token-hospital': '$token',
+        },
+        body: jsonEncode(event.data),
+      );
+
+      log('Status code: ${response.statusCode}');
+      log('Response body: ${response.body}');
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        emit(HospitalSuccess(message: data['msg']));
+      } else {
+        emit(HospitalFailure(error: data['msg'] ?? 'Registration failed'));
+      }
+    } catch (e) {
+      emit(HospitalFailure(error: 'Unexpected error occurred: $e'));
+      log(e.toString());
+    }
+  }
 //   Future<void> _onResendOtp(
 //       ResendHospitalOtp event, Emitter<HospitalAuthState> emit) async {
 //     emit(HospitalLoading());

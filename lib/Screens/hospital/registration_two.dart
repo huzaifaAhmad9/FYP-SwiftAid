@@ -1,9 +1,14 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:swift_aid/Screens/doctor_screens/doctor_main_home.dart';
 import 'package:swift_aid/Screens/personal_details/component/text_field.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' show LatLng;
 import 'package:swift_aid/Screens/hospital/select_from_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
+import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/components/custom_button.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
@@ -49,6 +54,108 @@ class _RegistrationTwoState extends State<RegistrationTwo> {
       log('Error fetching address: $e');
       setState(() => address = 'Error getting address');
     }
+  }
+
+  void _registerHospital2() {
+    context.read<HospitalAuthBloc>().add(RegisterHospital2({
+          'Location': {
+            'latitude': latitudeController.text,
+            'longitude': longitudeController.text,
+          },
+          'Description': descriptionController.text,
+          'Address': address
+        }));
+    customDialogue();
+  }
+
+  void customDialogue() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return BlocBuilder<HospitalAuthBloc, HospitalAuthState>(
+          builder: (context, state) {
+            if (state is HospitalLoading) {
+              return _buildDialog(
+                context,
+                content: const Row(
+                  children: [
+                    Spacer(),
+                    SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    Spacer(),
+                  ],
+                ),
+                title: "Loading...",
+              );
+            }
+
+            if (state is HospitalSuccess) {
+              log("Success state triggered");
+
+              // Show success dialog first
+              _buildDialog(
+                context,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.message,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    2.heightBox,
+                    const Icon(
+                      Icons.check_circle,
+                      color: AppColors.primaryColor,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+                title: "Success",
+              );
+
+              // Trigger navigation after the dialog is shown
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const DoctorMainHome()));
+              });
+            }
+
+            if (state is HospitalFailure) {
+              return _buildDialog(
+                context,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.error,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    2.heightBox,
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+                title: "Error",
+              );
+            }
+
+            return const SizedBox();
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -197,8 +304,9 @@ class _RegistrationTwoState extends State<RegistrationTwo> {
                       width: 250,
                       text: 'Register',
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          //! logic here
+                        if (_formKey.currentState!.validate() &&
+                            address.isNotEmpty) {
+                          _registerHospital2();
                         } else {
                           log('Validation failed!');
                         }
@@ -213,4 +321,12 @@ class _RegistrationTwoState extends State<RegistrationTwo> {
       ),
     );
   }
+}
+
+Widget _buildDialog(BuildContext context,
+    {required Widget content, required String title}) {
+  return AlertDialog(
+    title: Text(title),
+    content: content,
+  );
 }
