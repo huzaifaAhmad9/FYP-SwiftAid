@@ -1,3 +1,4 @@
+import 'package:swift_aid/Screens/hospital/Shift_timings/create_shifts.dart';
 import 'package:swift_aid/Screens/hospital/Staff/get_staff_list.dart';
 import 'package:swift_aid/Screens/hospital/Staff/add_staff.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
@@ -125,7 +126,6 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
                       MaterialPageRoute(builder: (_) => const GetStaffList()));
                 },
               ),
-             
             ],
 
             //! Expandable Staff section
@@ -148,7 +148,8 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
                 title: const Text('Add Shift'),
                 onTap: () {
                   Navigator.pop(context);
-                  //! Navigate to Add Staff screen
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const CreateShifts()));
                 },
               ),
               ListTile(
