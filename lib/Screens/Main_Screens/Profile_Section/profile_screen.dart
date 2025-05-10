@@ -52,7 +52,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (mounted) {
       if (isLoggedIn == 'user') {
         context.read<UserBloc>().add(FetchUserEvent());
-      } else if (isLoggedIn == 'hospital') {}
+      }
+      //else if (isLoggedIn == 'hospital') {}
     }
   }
 
@@ -66,11 +67,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       log('User token: $token');
     }
 
-    token = prefs.getString('hospital_auth_token');
-    if (token != null) {
-      isLoggedIn = 'hospital';
-      log('Hospital token: $token');
-    }
+    // token = prefs.getString('hospital_auth_token');
+    // if (token != null) {
+    //   isLoggedIn = 'hospital';
+    //   log('Hospital token: $token');
+    // }
 
     // If no token found, log a message or set a default state
     if (isLoggedIn == null) {
@@ -366,7 +367,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     CustomListTile(
                       onTap: () {
                         log("isloggedIn: $isLoggedIn");
-
                         showCustomDialog(context, isLoggedIn!);
                       },
                       leading: Container(

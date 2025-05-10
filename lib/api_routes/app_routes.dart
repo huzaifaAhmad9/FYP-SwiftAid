@@ -1,4 +1,71 @@
+import 'app_config.dart';
+
 class AppRoutes {
+  static String get _baseUrl => AppConfig.baseUrl;
+
+  // === Nearby Hospitals ===
+  static String nearbyHospitalsUrl(double latitude, double longitude) {
+    return 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
+        'location=$latitude,$longitude&radius=3500&type=hospital&key=${AppConfig.mapApi}';
+  }
+
+  // === Auth APIs ===
+  static String get userRegister => "$_baseUrl/user/register";
+  static String get userLogin => "$_baseUrl/user/login";
+  static String userVerify() => "$_baseUrl/user/verify";
+  static String get userResendOTP => "$_baseUrl/user/resndOTP";
+  static String get userForgotPassword => "$_baseUrl/user/forgot-password";
+  static String get userResetPassword => "$_baseUrl/user/reset-password";
+
+  static String get hospitalRegister => "$_baseUrl/hospital/register";
+  static String get hospitalRegister2 => "$_baseUrl/hospital/locate-detail";
+  static String get hospitalLogin => "$_baseUrl/hospital/login";
+  static String hospitalVerify() => "$_baseUrl/hospital/verify";
+  static String get hospitalResendOTP => "$_baseUrl/hospital/resendOTP";
+  static String get hospitalForgotPassword =>
+      "$_baseUrl/hospital/forgot-password";
+  static String get hospitalResetPassword =>
+      "$_baseUrl/hospital/reset-password";
+
+  // === Profile APIs ===
+  static String get userProfile => "$_baseUrl/user/profile";
+  static String get hospitalProfile => "$_baseUrl/hospital/profile";
+
+  // === Staff APIs ===
+  static String get createStaff => "$_baseUrl/hospital/createStaff";
+  static String get getAllStaff => "$_baseUrl/hospital/getAllStaff";
+  static String getStaff(String id) => "$_baseUrl/hospital/getStaff/$id";
+  static String updateStaff(String id) => "$_baseUrl/hospital/updateStaff/$id";
+  static String deleteStaff(String id) => "$_baseUrl/hospital/deleteStaff/$id";
+
+  // === Shift APIs ===
+  static String createUpdateShift(String staffId) =>
+      "$_baseUrl/hospital/createUpdateShift/$staffId";
+  static String shiftsByStaff(String staffId) =>
+      "$_baseUrl/hospital/shitBySaff/$staffId";
+  static String deleteShift(String staffId) =>
+      "$_baseUrl/hospital/deleteShift/$staffId";
+
+  // === Case APIs ===
+  static String createCase(String caseId) =>
+      "$_baseUrl/user/create-case/$caseId";
+  static String assignHospitalToCase(String caseId) =>
+      "$_baseUrl/user/assign-hospital/$caseId";
+
+  // === Upload API ===
+  static String get uploadPhoto => "$_baseUrl/upload-api";
+
+  // === AI API ===
+  static String get recommendedHospitals => "$_baseUrl/ai/recommendedHospitals";
+  static String get chatBot => "$_baseUrl/ai/chat";
+}
+
+
+
+
+//! All App Routes
+/**
+ class AppRoutes {
   static const String mapApi = "AIzaSyDaaNW6khrCkxJesgZCZ9lEqGqfPS6373Q";
 
   static const String baseUrl = "https://fyp.pelarinfruit.com/api";
@@ -54,3 +121,5 @@ class AppRoutes {
   // === Upload API ===
   static const String uploadPhoto = "$baseUrl/upload-api";
 }
+
+ **/

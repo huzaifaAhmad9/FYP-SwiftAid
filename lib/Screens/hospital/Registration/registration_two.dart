@@ -1,12 +1,12 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:swift_aid/Screens/hospital/Registration/select_from_map.dart';
 import 'package:swift_aid/Screens/personal_details/component/text_field.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_event.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_state.dart';
 import 'package:swift_aid/bloc/hospital_auth_bloc/hospital_auth_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' show LatLng;
 import 'package:swift_aid/Screens/hospital/hospital_dashboard.dart';
-import 'package:swift_aid/Screens/hospital/select_from_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swift_aid/components/responsive_sized_box.dart';
 import 'package:swift_aid/components/custom_button.dart';

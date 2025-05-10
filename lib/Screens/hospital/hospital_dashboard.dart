@@ -1,3 +1,5 @@
+import 'package:swift_aid/Screens/hospital/Staff/get_staff_list.dart';
+import 'package:swift_aid/Screens/hospital/Staff/add_staff.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +111,8 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
                 title: const Text('Add Staff'),
                 onTap: () {
                   Navigator.pop(context);
-                  //! Navigate to Add Staff screen
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const AddStaff()));
                 },
               ),
               ListTile(
@@ -118,27 +121,11 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
                 title: const Text('Get Staff'),
                 onTap: () {
                   Navigator.pop(context);
-                  //! Navigate to Add Staff screen
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const GetStaffList()));
                 },
               ),
-              ListTile(
-                contentPadding: const EdgeInsets.only(left: 60.0),
-                leading: const Icon(Icons.update),
-                title: const Text('Update Staff'),
-                onTap: () {
-                  Navigator.pop(context);
-                  //! Navigate to Update Staff screen
-                },
-              ),
-              ListTile(
-                contentPadding: const EdgeInsets.only(left: 60.0),
-                leading: const Icon(Icons.delete),
-                title: const Text('Delete Staff'),
-                onTap: () {
-                  Navigator.pop(context);
-                  //! Navigate to Delete Staff screen
-                },
-              ),
+             
             ],
 
             //! Expandable Staff section
