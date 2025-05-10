@@ -151,7 +151,7 @@ class _MessageScreenState extends State<MessageScreen> {
                     ),
                     SizedBox(width: 10),
                     Text(
-                      'AI is typing...',
+                      'Bot is typing...',
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],
@@ -275,6 +275,3 @@ class Chats extends StatelessWidget {
     );
   }
 }
-
-
-//!
