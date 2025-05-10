@@ -1,5 +1,5 @@
-import 'package:swift_aid/Screens/Main_Screens/Location/Registration/emergency_registration_voice.dart';
-import 'package:swift_aid/Screens/Main_Screens/Location/Registration/emergency_registration.dart';
+import 'package:swift_aid/Screens/User_Screens/Location/Registration/emergency_registration_voice.dart';
+import 'package:swift_aid/Screens/User_Screens/Location/Registration/emergency_registration.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart'; 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:swift_aid/components/custom_listtile.dart';

@@ -1,7 +1,7 @@
-import 'package:swift_aid/Screens/Main_Screens/Home_Screen/components/top_builder_row.dart';
-import 'package:swift_aid/Screens/Main_Screens/Home_Screen/components/bottom_builder.dart';
-import 'package:swift_aid/Screens/Main_Screens/Home_Screen/components/title_builder.dart';
-import 'package:swift_aid/Screens/Main_Screens/Home_Screen/components/home_card.dart';
+import 'package:swift_aid/Screens/User_Screens/Home_Screen/components/top_builder_row.dart';
+import 'package:swift_aid/Screens/User_Screens/Home_Screen/components/bottom_builder.dart';
+import 'package:swift_aid/Screens/User_Screens/Home_Screen/components/title_builder.dart';
+import 'package:swift_aid/Screens/User_Screens/Home_Screen/components/home_card.dart';
 import 'package:swift_aid/Screens/personal_details/component/text_field.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:flutter/cupertino.dart';

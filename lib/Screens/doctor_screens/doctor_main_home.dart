@@ -1,7 +1,7 @@
 import 'package:swift_aid/Screens/doctor_screens/Search_doctor_screen/search_doctors.dart';
-import 'package:swift_aid/Screens/Main_Screens/Profile_Section/profile_screen.dart';
+import 'package:swift_aid/Screens/User_Screens/Profile_Section/profile_screen.dart';
 import 'package:swift_aid/Screens/doctor_screens/doctor_home_screen.dart';
-import 'package:swift_aid/Screens/Main_Screens/message_screen.dart';
+import 'package:swift_aid/Screens/User_Screens/Ai_chatbot/message_screen.dart';
 import 'package:swift_aid/app_colors/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
